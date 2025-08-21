@@ -120,6 +120,16 @@ input[type="text"],input[type="search"],input[type="number"]{
   width:100%;text-align:left;padding:18px 16px;border:none;background:transparent;
   display:flex;align-items:center;gap:12px;font-weight:700; font-size: 18px;
 }
+
+/* 아이콘 이미지 크기 조절 */
+.sport-toggle .icon-img {
+  width: 20px;   /* 아이콘 크기 */
+  height: 20px;
+  display: inline-block;
+  vertical-align: middle; /* 텍스트와 세로 정렬 */
+}
+
+
 .sport-toggle .count{margin-left:auto;color:#777}
 .team-list{list-style:none;margin:0;padding:0 var(--gap-md) var(--gap-md)}
 
