@@ -135,6 +135,22 @@ input[type="text"],input[type="search"],input[type="number"]{
 
 .team-actions{display:flex;gap:8px}
 
+/* 검색창 placeholder 및 입력 */
+.search-box input {
+  font-size: 18px;
+}
+
+/* 탭 버튼 (국내/해외) */
+.tab-button {
+  font-size: 18px;
+}
+
+/* 구단 항목 */
+.team-category {
+  font-size: 18px;
+}
+
+
 /* =========================
    Right panel
    ========================= */
