@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>커버 이미지 생성기</title>
+  <!-- 필요 시 CSS/JS 추가 -->
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">커버 이미지 생성기</div>
+    <!-- 오른쪽 패널(미리보기/설정)은 유지, 왼쪽 패널만 초기화 -->
+    <button id="reset-left-only" class="btn btn-ghost" aria-label="왼쪽 패널 초기화" data-action="reset-left">
+      초기화
+    </button>
+  </header>
+
+  <main class="layout">
+    <!-- ===== 왼쪽 패널 : 구단 선택 영역 ===== -->
+    <aside id="left-panel" class="panel-left" aria-label="구단 선택">
+      <!-- 검색 -->
+      <div class="search-box">
+        <label for="team-search" class="visually-hidden">구단 검색하기</label>
+        <input id="team-search" type="search" placeholder="구단 검색하기" data-role="team-search" />
+      </div>
+
+      <!-- 탭: 국내 / 해외 -->
+      <div class="tabs" role="tablist" aria-label="리그 구분">
+        <button role="tab" aria-selected="true" id="tab-domestic" data-tab="domestic">국내</button>
+        <button role="tab" aria-selected="false" id="tab-overseas" data-tab="overseas">해외</button>
+      </div>
+
+      <!-- 종목 아코디언 -->
+      <nav class="sports-groups" aria-label="종목 목록">
+        <!-- 야구 -->
+        <section class="sport-group" data-sport="baseball">
+          <button class="sport-toggle" aria-expanded="true">
+            <span class="icon" aria-hidden="true">⚾</span>
+            <span class="label">야구 구단</span>
+            <span class="count" data-count>10</span>
+          </button>
+          <ul class="team-list" role="list">
+            <!-- 팀 아이템 템플릿 -->
+            <!-- 각 팀은 로고, 팀명, 우리팀/상대팀 지정 버튼 -->
+            <li class="team-item" data-team-id="doosan-bears">
+              <button class="team-select" data-role="select-team" data-team="doosan-bears">
+                <img src="" alt="" class="team-logo" data-role="team-logo" />
+                <span class="team-name">두산 베어스</span>
+              </button>
+              <div class="team-actions">
+                <button class="btn-mini" data-role="set-home" data-team="doosan-bears">우리 팀</button>
+                <button class="btn-mini" data-role="set-away" data-team="doosan-bears">상대 팀</button>
+              </div>
+            </li>
+
+            <!-- 다른 팀들도 동일 구조로 렌더링 -->
+          </ul>
+        </section>
+
+        <!-- 축구 -->
+        <section class="sport-group" data-sport="football">
+          <button class="sport-toggle" aria-expanded="false">
+            <span class="icon" aria-hidden="true">⚽</span>
+            <span class="label">축구 구단</span>
+            <span class="count" data-count>15</span>
+          </button>
+          <ul class="team-list" hidden role="list"></ul>
+        </section>
+
+        <!-- 농구 -->
+        <section class="sport-group" data-sport="basketball">
+          <button class="sport-toggle" aria-expanded="false">
+            <span class="icon" aria-hidden="true">🏀</span>
+            <span class="label">농구 구단</span>
+            <span class="count" data-count>15</span>
+          </button>
+          <ul class="team-list" hidden role="list"></ul>
+        </section>
+
+        <!-- 배구 -->
+        <section class="sport-group" data-sport="volleyball">
+          <button class="sport-toggle" aria-expanded="false">
+            <span class="icon" aria-hidden="true">🏐</span>
+            <span class="label">배구 구단</span>
+            <span class="count" data-count>15</span>
+          </button>
+          <ul class="team-list" hidden role="list"></ul>
+        </section>
+
+        <!-- 롤 -->
+        <section class="sport-group" data-sport="lol">
+          <button class="sport-toggle" aria-expanded="false">
+            <span class="icon" aria-hidden="true">🎮</span>
+            <span class="label">롤 구단</span>
+            <span class="count" data-count>15</span>
+          </button>
+          <ul class="team-list" hidden role="list"></ul>
+        </section>
+      </nav>
+    </aside>
+
+    <!-- ===== 오른쪽 패널 : 미리보기 + 설정 ===== -->
+    <section id="right-panel" class="panel-right">
+      <!-- 미리보기 캔버스 -->
+      <div class="preview-card" aria-label="커버 미리보기">
+        <div class="preview-toolbar">
+          <button id="download-btn" class="btn" data-action="download">다운로드</button>
+        </div>
+
+        <div class="preview-stage" role="img" aria-label="우리 팀과 상대 팀 비교 이미지" data-role="preview-stage">
+          <!-- 로고 영역 -->
+          <div class="side home" data-side="home">
+            <div class="logo-box" data-role="home-logo-box" aria-label="우리 팀 로고">
+              <!-- 동적 로고 img 삽입 -->
+            </div>
+            <div class="team-label" data-role="home-name">우리 팀</div>
+            <div class="score" data-role="home-score" aria-live="polite">0</div>
+          </div>
+
+          <div class="vs">vs</div>
+
+          <div class="side away" data-side="away">
+            <div class="logo-box" data-role="away-logo-box" aria-label="상대 팀 로고"></div>
+            <div class="team-label" data-role="away-name">상대 팀</div>
+            <div class="score" data-role="away-score" aria-live="polite">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 설정 폼 -->
+      <form class="controls" aria-label="커버 설정" autocomplete="off">
+        <!-- 우리 팀 -->
+        <div class="control-row">
+          <label for="home-team" class="control-label">우리 팀</label>
+          <input id="home-team" type="text" readonly placeholder="우리 팀을 선택하세요" data-role="home-team-input" />
+        </div>
+
+        <div class="control-row">
+          <label for="home-score" class="control-label">우리 팀 스코어</label>
+          <input id="home-score" type="number" min="0" step="1" value="0" data-role="home-score-input" />
+        </div>
+
+        <!-- 상대 팀 -->
+        <div class="control-row">
+          <label for="away-team" class="control-label">상대 팀</label>
+          <input id="away-team" type="text" readonly placeholder="상대 팀을 선택하세요" data-role="away-team-input" />
+        </div>
+
+        <div class="control-row">
+          <label for="away-score" class="control-label">상대 팀 스코어</label>
+          <input id="away-score" type="number" min="0" step="1" value="0" data-role="away-score-input" />
+        </div>
+
+        <!-- 컬러 설정 -->
+        <div class="control-row">
+          <label class="control-label" for="text-color">글자 색</label>
+          <div class="color-field">
+            <input id="text-color" type="color" value="#000000" data-role="text-color" aria-label="글자 색상 선택" />
+            <input type="text" value="#000000" data-role="text-color-hex" aria-label="글자 색상 HEX" />
+          </div>
+        </div>
+
+        <div class="control-row">
+          <label class="control-label" for="bg-color">배경 색</label>
+          <div class="color-field">
+            <input id="bg-color" type="color" value="#FFFFFF" data-role="bg-color" aria-label="배경 색상 선택" />
+            <input type="text" value="#FFFFFF" data-role="bg-color-hex" aria-label="배경 색상 HEX" />
+          </div>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <!-- 접근성 보조용 클래스 -->
+  <style>
+    .visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap;}
+  </style>
+</body>
+</html>
