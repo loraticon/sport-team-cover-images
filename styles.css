@@ -1,0 +1,185 @@
+/* =========================
+   Design tokens (from img #9)
+   ========================= */
+:root{
+  --black:#000000;
+  --white:#FFFFFF;
+  --gray-200:#FAFAFA;
+  --gray-300:#EDEDED;
+  --gray-400:#D9D9D9;
+  --gray-450:#BBBBBB;
+  --gray-500:#8E8E8E;
+  --ink:#121212;
+  --blue:#2A71EB;
+  --red:#E52F2F;
+
+  /* layout */
+  --left-col:576px;         /* 좌측 패널 폭 */
+  --container-max:1280px;   /* 전체 최대폭 */
+  --page-pad:24px;          /* 페이지 좌우 여백 */
+  --gap-xl:32px;            /* 큰 간격 */
+  --gap-lg:24px;            /* 기본 간격 */
+  --gap-md:16px;
+  --gap-sm:12px;
+
+  /* radii & shadow */
+  --r-lg:16px;
+  --r-md:12px;
+  --r-sm:10px;
+  --shadow:0 6px 24px rgba(0,0,0,.06);
+
+  /* preview stage */
+  --stage-bg:#F7F7F7;
+  --stage-h:420px;          /* 시안 기준 높이 */
+  --logo-box:250px;         /* 오른쪽 패널 로고 박스 */
+  --sides-gap:238px;        /* 좌/우 로고 사이 */
+}
+
+/* =========================
+   Reset
+   ========================= */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  color:var(--ink);
+  background:#fff;
+  font-family: Pretendard, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  font-weight:400;
+}
+
+/* =========================
+   Typography (from img #10)
+   ========================= */
+.h1{font-size:40px;font-weight:700;line-height:1.2}
+.fs-18{font-size:18px}
+.fs-20{font-size:20px}
+.fs-24{font-size:24px}
+.fs-32{font-size:32px}
+.fs-40{font-size:40px}
+.fs-64{font-size:64px}
+.fw-reg{font-weight:400}    /* Regular */
+.fw-med{font-weight:500}    /* Medium */
+.fw-bold{font-weight:700}   /* Bold */
+
+/* =========================
+   Buttons & inputs
+   ========================= */
+.btn{height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--gray-300);background:#fff}
+.btn-ghost{border:none;background:transparent;color:var(--gray-500)}
+.btn-mini{height:32px;padding:0 10px;border:1px solid var(--gray-300);border-radius:10px;background:#fff;font-size:12px}
+.btn-mini.is-selected{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+input[type="text"],input[type="search"],input[type="number"]{
+  height:40px;border:1px solid var(--gray-300);border-radius:10px;padding:0 12px;background:#fff
+}
+
+/* =========================
+   Header
+   ========================= */
+.app-header{
+  display:flex;align-items:center;justify-content:space-between;
+  max-width:var(--container-max);margin:24px auto 0;padding:0 var(--page-pad);
+}
+.brand{font-weight:700;font-size:22px}
+
+/* =========================
+   Layout
+   ========================= */
+.layout{
+  max-width:var(--container-max);
+  margin:16px auto 40px;
+  padding:0 var(--page-pad);
+  display:grid;grid-template-columns:var(--left-col) 1fr;gap:var(--gap-xl);
+}
+
+/* =========================
+   Left panel
+   ========================= */
+.panel-left{
+  background:var(--gray-200);
+  border-radius:var(--r-lg);
+  padding:var(--gap-lg);
+}
+
+.search-box{margin-bottom:var(--gap-lg)}
+.search-box input{
+  width:100%;height:80px;border-radius:12px;border:1px solid var(--gray-400);padding:0 16px;font-size:18px;
+  background:#fff;
+}
+
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:var(--gap-md);margin-bottom:var(--gap-lg)}
+.tabs [role="tab"]{
+  height:80px;border:none;border-radius:12px;background:#F0F0F0;font-weight:700
+}
+.tabs [aria-selected="true"]{background:#121212;color:#fff}
+
+.sports-groups{display:flex;flex-direction:column;gap:var(--gap-md)}
+.sport-group{background:#fff;border:1px solid var(--gray-300);border-radius:12px}
+.sport-toggle{
+  width:100%;text-align:left;padding:18px 16px;border:none;background:transparent;
+  display:flex;align-items:center;gap:12px;font-weight:700
+}
+.sport-toggle .count{margin-left:auto;color:#777}
+.team-list{list-style:none;margin:0;padding:0 var(--gap-md) var(--gap-md)}
+
+.team-item{
+  display:flex;align-items:center;gap:12px;padding:16px 4px;border-radius:12px;
+}
+.team-item + .team-item{border-top:1px dashed var(--gray-300)}
+
+.team-select{display:flex;align-items:center;gap:12px;flex:1;background:transparent;border:none;text-align:left;padding:0}
+.team-logo{width:56px;height:56px;border-radius:12px;overflow:hidden;flex:0 0 56px;background:#fff;border:1px solid var(--gray-300);display:flex;align-items:center;justify-content:center}
+.team-logo img{width:100%;height:100%;object-fit:cover;display:block}
+.team-name{font-weight:700;font-size:18px}
+
+.team-actions{display:flex;gap:8px}
+
+/* =========================
+   Right panel
+   ========================= */
+.panel-right{display:flex;flex-direction:column;gap:var(--gap-lg)}
+
+.preview-card{
+  background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);
+  padding:var(--gap-lg);
+}
+.preview-toolbar{display:flex;justify-content:flex-end}
+.preview-stage{
+  margin-top:var(--gap-md);
+  background:var(--gray-200);border-radius:16px;border:1px solid var(--gray-300);
+  height:var(--stage-h);display:flex;align-items:center;justify-content:center;gap:var(--sides-gap);position:relative;
+}
+.preview-stage .vs{font-size:56px;font-weight:700;color:#121212}
+
+.side{display:flex;flex-direction:column;align-items:center;gap:12px}
+.logo-box{
+  width:var(--logo-box);height:var(--logo-box);
+  border:2px dashed var(--gray-400);border-radius:16px;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff;
+}
+.logo-box svg,.logo-box img{width:100%;height:100%;object-fit:contain;display:block}
+.team-label{font-size:24px;color:var(--gray-500);font-weight:700}
+.score{font-size:64px;font-weight:700;margin-top:12px}
+
+/* Controls */
+.controls{
+  background:#fff;border-radius:var(--r-lg);box-shadow:var(--shadow);
+  padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:14px 16px;
+}
+.control-row{
+  display:flex;align-items:center;gap:12px;background:var(--gray-200);
+  border:1px solid var(--gray-400);border-radius:12px;padding:16px 12px
+}
+.control-label{min-width:120px;font-weight:700}
+.controls input[type="text"], .controls input[type="number"]{
+  flex:1;height:44px;border:1px solid var(--gray-300);border-radius:10px;padding:0 12px;background:#fff
+}
+.color-field{display:flex;align-items:center;gap:10px;width:100%}
+.color-field input[type="color"]{width:40px;height:40px;padding:0;border:none;background:transparent}
+
+/* Responsive */
+@media (max-width: 1200px){
+  .layout{grid-template-columns:1fr;gap:var(--gap-lg)}
+  .controls{grid-template-columns:1fr}
+}
