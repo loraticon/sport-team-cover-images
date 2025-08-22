@@ -318,5 +318,34 @@ a, a:visited {
   }
 }
 
+/* ===== 모바일(≤640px)에서 실제 마크업에 맞춰 강제 적용 ===== */
+@media (max-width: 640px){
+
+  /* 탭: role="tab"이 없더라도 버튼/클래스 기반으로 모두 매칭 */
+  .tabs [role="tab"],
+  .tabs .tab,
+  .tabs button {
+    height: 56px;              /* 80 → 56로 더 컴팩트 */
+    padding: 0 16px;
+    font-size: 18px;
+    border-radius: 12px;
+  }
+
+  /* 아코디언/팀행도 살짝 압축 */
+  .sport-toggle{ padding: 12px 12px; }
+  .team-item{ padding: 12px 4px; }
+  .team-logo{ width: 48px; height: 48px; flex: 0 0 48px; }
+
+  /* 미리보기 스테이지: 하단 여백 넉넉히(점수 잘림 방지) */
+  .preview-stage{
+    min-height: 560px;         /* 필요시 520~600 사이 조정 */
+    padding: 28px 16px 112px;  /* 상/좌우/하 */
+    gap: 104px;                /* 좌/우 로고 간격(모바일) */
+  }
+
+  /* 카드 패딩도 모바일 밀도에 맞게 */
+  .preview-card,
+  .controls{ padding: 16px; }
+}
 
 
