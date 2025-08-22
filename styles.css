@@ -168,7 +168,7 @@ img{max-width:100%;height:auto;display:block}
 .team-item + .team-item{border-top:1px dashed var(--gray-300)}
 .team-select{display:flex;align-items:center;gap:12px;flex:1;background:transparent;border:none;text-align:left;padding:0}
 .team-logo{width:56px;height:56px;border-radius:12px;overflow:hidden;flex:0 0 56px;background:#fff;border:1px solid var(--gray-300);display:flex;align-items:center;justify-content:center}
-.team-logo svg{width:100%;height:100%;display:block}
+.team-logo svg,.team-logo img {width:100%;height:100%;display:block}
 .team-name{font-weight:700;font-size:18px}            /* 18px */
 .team-actions{display:flex;gap:8px}
 .btn-mini{height:32px;padding:0 10px;border:1px solid var(--gray-300);border-radius:10px;background:#fff;font-size:12px}
