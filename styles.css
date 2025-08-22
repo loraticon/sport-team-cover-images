@@ -265,6 +265,13 @@ img{max-width:100%;height:auto;display:block}
 .color-field{display:flex;align-items:center;gap:10px;width:100%}
 .color-field input[type="color"]{width:40px;height:40px;padding:0;border:none;background:transparent}
 
+/* 미리보기 카드 툴바: 다운로드 버튼을 오른쪽 정렬 */
+.preview-toolbar{
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 12px;   /* 아래 스테이지와 간격 */
+}
+
 /* =========================
    Misc
    ========================= */
