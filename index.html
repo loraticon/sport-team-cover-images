@@ -358,10 +358,17 @@ function buildLeftLists() {
   });
 }
 
+// 공백/하이픈/점/슬래시 등을 제거하고 소문자로 변환
+function norm(str) {
+  return String(str)
+    .toLowerCase()
+    .replace(/[\s\-._/·・]/g, ""); // 필요 시 다른 구분자도 추가
+}
+
 function matchSearch(team) {
   if (!state.search) return true;
-  const q = state.search.trim().toLowerCase();
-  return team.name.toLowerCase().includes(q) || team.id.includes(q);
+  const q = norm(state.search);
+  return norm(team.name).includes(q) || norm(team.id).includes(q);
 }
 
 /* =========================
