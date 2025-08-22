@@ -251,3 +251,22 @@ img{max-width:100%; height:auto; display:block;}
 .sport-toggle .icon{width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center;}
 .sport-toggle .icon img{width:100%; height:100%; object-fit:contain; display:block;}
 
+
+/* 점수가 잘리는 문제 해결 */
+.preview-stage{
+  /* 상단 40, 좌우 24, 하단 80px 여유 */
+  padding: 40px 24px 80px;
+  min-height: 560px;          /* 로고(250) + 라벨 + 점수(64) + 여백 고려하여 넉넉히 */
+  overflow: visible;          /* 내용이 잘리지 않도록 */
+}
+
+.score{
+  font-size: 64px;
+  line-height: 1;             /* 폰트 라인박스 때문에 튀어나오는 것 방지 */
+  margin-top: 16px;           /* 로고 아래 여유 */
+}
+
+/* (안전장치) 로고/썸네일은 상자 안에 정확히 맞추기 */
+.logo-box svg,
+.team-logo svg{ width:100%; height:100%; display:block; }
+
