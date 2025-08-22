@@ -665,6 +665,20 @@ function svgToPng(svgString, width, height) {
     img.src = url;
   });
 }
+    
+// 왼쪽 패널 강조 상태 반영
+if (state.leftPanelSelected.home === team.id) btnHome.classList.add("is-selected");
+if (state.leftPanelSelected.away === team.id) btnAway.classList.add("is-selected");
+
+// ★ 같은 팀은 양쪽 역할 동시 지정 금지: 한쪽이 선택되면 반대쪽은 비활성화
+if (state.leftPanelSelected.home === team.id) {
+  btnAway.disabled = true;
+  btnAway.setAttribute("aria-disabled", "true");
+}
+if (state.leftPanelSelected.away === team.id) {
+  btnHome.disabled = true;
+  btnHome.setAttribute("aria-disabled", "true");
+}
 </script>
 
 </body>
