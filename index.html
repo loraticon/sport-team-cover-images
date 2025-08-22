@@ -62,7 +62,7 @@
         </section>
 
         <!-- 축구 -->
-        <section class="sport-group" data-sport="football">
+        <section class="sport-group" data-sport="soccer">
           <button class="sport-toggle" aria-expanded="false">
             <span class="icon" aria-hidden="true">
               <img src="icons/soccer.png" alt="축구" class="icon-img">
@@ -190,7 +190,7 @@
   </style>
   <script>
 
-// sport 폴더명이 현재 'baseball', 'football' 등이라면 그대로 사용
+// sport 폴더명이 현재 'baseball', 'soccer' 등이라면 그대로 사용
 // 만약 '1-baseball'처럼 넘버링을 유지한다면 매핑을 사용하세요.
 
     const LOGO_BASE = "icons";  // 루트
@@ -200,7 +200,7 @@ const LEAGUE_DIR = {
 };
 const SPORT_DIR = {
   baseball: "baseball",
-  football: "football",
+  soccer: "soccer",
   basketball: "basketball",
   volleyball: "volleyball",
   lol: "lol",
@@ -229,7 +229,7 @@ async function preloadTeamLogos() {
    - id: 고유값 (영문/숫자/하이픈 권장)
    - name: 표시 이름
    - league: domestic / overseas
-   - sport: baseball | football | basketball | volleyball | lol
+   - sport: baseball | soccer | basketball | volleyball | lol
    - svg: 로고 SVG 문자열 (viewBox가 포함된 순수 <svg> ...)
    ========================= */
 const TEAM_DB = [
@@ -297,7 +297,19 @@ const TEAM_DB = [
     id: "gangwon-fc",
     name: "강원 FC",
     league: "domestic",
-    sport: "football"
+    sport: "soccer"
+  },
+  {
+    id: "gwangju-fc",
+    name: "광주 FC",
+    league: "domestic",
+    sport: "soccer"
+  },
+  {
+    id: "gwangju-fc",
+    name: "광주 FC",
+    league: "domestic",
+    sport: "soccer"
   },
 ];
 
