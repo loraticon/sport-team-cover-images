@@ -318,21 +318,25 @@ async function init() {
    왼쪽 패널 구축/렌더
    ========================= */
 function buildLeftLists() {
-  // 종목별 섹션들
   const sections = $$(".sport-group", el.sportsGroups);
+
   sections.forEach(section => {
-    const sport = section.getAttribute("data-sport"); // baseball, football...
+    const sport = section.getAttribute("data-sport");
     const ul = $(".team-list", section);
+    const toggleBtn = $(".sport-toggle", section);
+
+    // 필터링
     const teams = TEAM_DB.filter(t =>
       t.sport === sport &&
       t.league === state.tab &&
       matchSearch(t)
     );
-    // count
+
+    // 카운트 갱신
     const countSpan = $("[data-count]", section);
     if (countSpan) countSpan.textContent = teams.length;
 
-    // 비우고 다시 채움
+    // 리스트 다시 그림
     ul.innerHTML = "";
     teams.forEach(team => {
       const li = document.createElement("li");
@@ -344,18 +348,16 @@ function buildLeftLists() {
       itemBtn.dataset.role = "select-team";
       itemBtn.dataset.team = team.id;
 
-      // 로고 미리보기(작게)
+      // ⬇️ 로고: 프리로드 성공 시 team.svg, 실패 시 파일 경로로 폴백
       const logoSpan = document.createElement("span");
       logoSpan.className = "team-logo";
-      // SVG 문자열을 data-uri 이미지로 바꿔 썸네일 표기(혹은 직접 innerHTML로 svg 넣어도 됨)
-      logoSpan.innerHTML = team.svg; // 썸네일 용으로 직접 삽입
+      logoSpan.innerHTML = team.svg || `<img src="${logoPath(team)}" alt="" width="40" height="40">`;
 
       const nameSpan = document.createElement("span");
       nameSpan.className = "team-name";
       nameSpan.textContent = team.name;
 
-      itemBtn.appendChild(logoSpan);
-      itemBtn.appendChild(nameSpan);
+      itemBtn.append(logoSpan, nameSpan);
 
       const actions = document.createElement("div");
       actions.className = "team-actions";
@@ -365,24 +367,32 @@ function buildLeftLists() {
       btnHome.dataset.role = "set-home";
       btnHome.dataset.team = team.id;
       btnHome.textContent = "우리 팀";
+      if (state.leftPanelSelected.home === team.id) btnHome.classList.add("is-selected");
 
       const btnAway = document.createElement("button");
       btnAway.className = "btn-mini";
       btnAway.dataset.role = "set-away";
       btnAway.dataset.team = team.id;
       btnAway.textContent = "상대 팀";
-
-      // 왼쪽 패널 강조 상태 반영
-      if (state.leftPanelSelected.home === team.id) btnHome.classList.add("is-selected");
       if (state.leftPanelSelected.away === team.id) btnAway.classList.add("is-selected");
 
-      actions.appendChild(btnHome);
-      actions.appendChild(btnAway);
-
-      li.appendChild(itemBtn);
-      li.appendChild(actions);
+      actions.append(btnHome, btnAway);
+      li.append(itemBtn, actions);
       ul.appendChild(li);
     });
+
+    // 검색 시 자동 펼침 / 평소엔 기존 상태 유지
+    if (state.search && state.search.trim() !== "") {
+      const shouldOpen = teams.length > 0;
+      toggleBtn?.setAttribute("aria-expanded", String(shouldOpen));
+      ul.hidden = !shouldOpen;
+    } else {
+      const expanded = toggleBtn?.getAttribute("aria-expanded") === "true";
+      ul.hidden = !expanded;
+    }
+  });
+}
+
 
   const sections = $$(".sport-group", el.sportsGroups);
   sections.forEach(section => {
