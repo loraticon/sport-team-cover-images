@@ -174,6 +174,38 @@ img{max-width:100%;height:auto;display:block}
 .btn-mini{height:32px;padding:0 10px;border:1px solid var(--gray-300);border-radius:10px;background:#fff;font-size:12px}
 .btn-mini.is-selected{background:var(--ink);color:#fff;border-color:var(--ink)}
 
+/* 숫자 옆에 chevron 아이콘 붙이기 */
+.sport-toggle .count{
+  margin-left: auto;                 /* 기존처럼 오른쪽 끝으로 밀기 */
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;                          /* 숫자와 아이콘 간격 */
+}
+
+/* 닫힘 상태(aria-expanded="false") → 아래쪽 화살표 */
+.sport-toggle .count::after{
+  content: "";
+  width: 16px;
+  height: 16px;
+  background: currentColor;          /* 숫자 색(#777)을 그대로 사용 */
+  /* 아이콘을 벡터로 마스킹해서 어떤 색이든 자연스럽게 표현 */
+  -webkit-mask: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>\
+<path d='M7.41 8.59 12 13.17 16.59 8.59 18 10l-6 6-6-6z' fill='black'/></svg>") no-repeat center / 100% 100%;
+          mask: url("data:image/svg+xml;utf8,\
+<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'>\
+<path d='M7.41 8.59 12 13.17 16.59 8.59 18 10l-6 6-6-6z' fill='black'/></svg>") no-repeat center / 100% 100%;
+  transition: transform .2s ease;
+  opacity: .8;                       /* 필요 시 톤 다운 */
+}
+
+/* 열림 상태(aria-expanded="true") → 위로 회전 */
+.sport-toggle[aria-expanded="true"] .count::after{
+  transform: rotate(180deg);
+}
+
+
+
 /* =========================
    Right panel
    ========================= */
