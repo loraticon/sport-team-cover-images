@@ -400,3 +400,21 @@ a, a:visited {
   .search-box .icon-search{ width: 18px !important; height: 18px !important; }
 }
 
+/* --- Fix: 오른쪽 미리보기가 왼쪽을 덮어 클릭을 막는 문제 --- */
+.layout{
+  display: grid;
+  grid-template-columns: 560px 1fr; /* 왼쪽 패널 고정폭, 오른쪽 유동 */
+  gap: 24px;
+  align-items: start;
+}
+
+.panel-left{ position: relative; z-index: 10; }   /* ← 좌측을 항상 위로 */
+.panel-right{ position: relative; z-index: 1; }
+
+.preview-card{ position: relative; overflow: hidden; } /* 내부가 왼쪽 영역으로 넘치지 않게 */
+.preview-stage{ position: relative; max-width: 100%; }  /* 우측 스테이지가 그리드 밖으로 커지지 않게 */
+
+/* (선택) 넓은 미디어에서만 좌우 2칼럼, 좁을 때 1칼럼 */
+@media (max-width: 1024px){
+  .layout{ grid-template-columns: 1fr; }
+}
