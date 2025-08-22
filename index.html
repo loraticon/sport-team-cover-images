@@ -5,13 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <link rel="stylesheet" href="styles.css">
   <title>커버 이미지 생성기</title>
-  <!-- 필요 시 CSS/JS 추가 -->
 </head>
 <body>
   <header class="app-header">
     <div class="brand">커버 이미지 생성기</div>
-    <!-- 오른쪽 패널(미리보기/설정)은 유지, 왼쪽 패널만 초기화 -->
-    <button id="reset-left-only" class="btn btn-ghost" aria-label="왼쪽 패널 초기화" data-action="reset-left">
+    <!-- 전체 초기화 -->
+    <button id="reset-left-only" class="btn btn-ghost" aria-label="전체 초기화" data-action="reset-all">
       초기화
     </button>
   </header>
@@ -44,11 +43,10 @@
             <span class="count" data-count>10</span>
           </button>
           <ul class="team-list" role="list">
-            <!-- 팀 아이템 템플릿 -->
-            <!-- 각 팀은 로고, 팀명, 우리팀/상대팀 지정 버튼 -->
+            <!-- 샘플 팀 -->
             <li class="team-item" data-team-id="doosan-bears">
               <button class="team-select" data-role="select-team" data-team="doosan-bears">
-                <img src="" alt="" class="team-logo" data-role="team-logo" />
+                <span class="team-logo" data-role="team-logo"></span>
                 <span class="team-name">두산 베어스</span>
               </button>
               <div class="team-actions">
@@ -56,8 +54,6 @@
                 <button class="btn-mini" data-role="set-away" data-team="doosan-bears">상대 팀</button>
               </div>
             </li>
-
-            <!-- 다른 팀들도 동일 구조로 렌더링 -->
           </ul>
         </section>
 
@@ -111,18 +107,14 @@
 
     <!-- ===== 오른쪽 패널 : 미리보기 + 설정 ===== -->
     <section id="right-panel" class="panel-right">
-      <!-- 미리보기 캔버스 -->
       <div class="preview-card" aria-label="커버 미리보기">
         <div class="preview-toolbar">
           <button id="download-btn" class="btn" data-action="download">다운로드</button>
         </div>
 
         <div class="preview-stage" role="img" aria-label="우리 팀과 상대 팀 비교 이미지" data-role="preview-stage">
-          <!-- 로고 영역 -->
           <div class="side home" data-side="home">
-            <div class="logo-box" data-role="home-logo-box" aria-label="우리 팀 로고">
-              <!-- 동적 로고 img 삽입 -->
-            </div>
+            <div class="logo-box" data-role="home-logo-box"></div>
             <div class="team-label" data-role="home-name">우리 팀</div>
             <div class="score" data-role="home-score" aria-live="polite">0</div>
           </div>
@@ -130,7 +122,7 @@
           <div class="vs">vs</div>
 
           <div class="side away" data-side="away">
-            <div class="logo-box" data-role="away-logo-box" aria-label="상대 팀 로고"></div>
+            <div class="logo-box" data-role="away-logo-box"></div>
             <div class="team-label" data-role="away-name">상대 팀</div>
             <div class="score" data-role="away-score" aria-live="polite">0</div>
           </div>
@@ -139,7 +131,6 @@
 
       <!-- 설정 폼 -->
       <form class="controls" aria-label="커버 설정" autocomplete="off">
-        <!-- 우리 팀 -->
         <div class="control-row">
           <label for="home-team" class="control-label">우리 팀</label>
           <input id="home-team" type="text" readonly placeholder="우리 팀을 선택하세요" data-role="home-team-input" />
@@ -150,7 +141,6 @@
           <input id="home-score" type="number" min="0" step="1" value="0" data-role="home-score-input" />
         </div>
 
-        <!-- 상대 팀 -->
         <div class="control-row">
           <label for="away-team" class="control-label">상대 팀</label>
           <input id="away-team" type="text" readonly placeholder="상대 팀을 선택하세요" data-role="away-team-input" />
@@ -161,7 +151,6 @@
           <input id="away-score" type="number" min="0" step="1" value="0" data-role="away-score-input" />
         </div>
 
-        <!-- 컬러 설정 -->
         <div class="control-row">
           <label class="control-label" for="text-color">글자 색</label>
           <div class="color-field">
@@ -184,15 +173,13 @@
   <!-- 접근성 보조용 클래스 -->
   <style>
     .visually-hidden{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap;}
+    /* 보조 스타일: 반대 역할이 잠긴 버튼 표시 */
+    .team-actions .btn-mini[disabled]{opacity:.45;cursor:not-allowed;}
   </style>
+
   <script>
 /* =========================
    팀 데이터 (샘플)
-   - id: 고유값 (영문/숫자/하이픈 권장)
-   - name: 표시 이름
-   - league: domestic / overseas
-   - sport: baseball | football | basketball | volleyball | lol
-   - svg: 로고 SVG 문자열 (viewBox가 포함된 순수 <svg> ...)
    ========================= */
 const TEAM_DB = [
   {
@@ -221,38 +208,29 @@ const TEAM_DB = [
 
 /* ===== 상태 ===== */
 const state = {
-  tab: "domestic",   // domestic | overseas
+  tab: "domestic",
   search: "",
-  // 오른쪽 패널의 실제 선택 상태
   homeTeamId: null,
   awayTeamId: null,
   homeScore: 0,
   awayScore: 0,
   textColor: "#000000",
   bgColor: "#FFFFFF",
-  // 왼쪽 패널 강조 상태(우리/상대 버튼 눌러서 표시만)
-  leftPanelSelected: {
-    home: null,
-    away: null
-  }
+  leftPanelSelected: { home: null, away: null }
 };
 
-/* ===== DOM 획득 ===== */
+/* ===== DOM ===== */
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 
 const el = {
-  // 헤더
   resetLeft: $("#reset-left-only"),
-
-  // 왼쪽 패널
+  leftPanel: $("#left-panel"),
   teamSearch: $("#team-search"),
   tabDomestic: $("#tab-domestic"),
   tabOverseas: $("#tab-overseas"),
   sportsGroups: $(".sports-groups"),
-  // 각 종목 팀 리스트 UL (여기서는 야구만 동적 렌더링 예시)
-  // 데이터에 따라 전 종목 렌더링 하므로 동적으로 잡음
-  // 오른쪽 패널 - 미리보기
+
   stage: $('[data-role="preview-stage"]'),
   homeLogoBox: $('[data-role="home-logo-box"]'),
   awayLogoBox: $('[data-role="away-logo-box"]'),
@@ -260,7 +238,7 @@ const el = {
   awayName: $('[data-role="away-name"]'),
   homeScore: $('[data-role="home-score"]'),
   awayScore: $('[data-role="away-score"]'),
-  // 오른쪽 패널 - 컨트롤
+
   homeTeamInput: $('[data-role="home-team-input"]'),
   awayTeamInput: $('[data-role="away-team-input"]'),
   homeScoreInput: $('[data-role="home-score-input"]'),
@@ -269,38 +247,28 @@ const el = {
   textColorHex: $('[data-role="text-color-hex"]'),
   bgColor: $('[data-role="bg-color"]'),
   bgColorHex: $('[data-role="bg-color-hex"]'),
-  // 다운로드
   downloadBtn: $("#download-btn"),
 };
 
-/* ===== 초기 렌더링 ===== */
+/* ===== 초기화 ===== */
 init();
-
-function init() {
-  buildLeftLists();
-  bindEvents();
-  renderRightPanel();
-}
+function init(){ buildLeftLists(); bindEvents(); renderRightPanel(); }
 
 /* =========================
-   왼쪽 패널 구축/렌더
+   왼쪽 패널 구축
    ========================= */
 function buildLeftLists() {
-  // 종목별 섹션들
   const sections = $$(".sport-group", el.sportsGroups);
   sections.forEach(section => {
-    const sport = section.getAttribute("data-sport"); // baseball, football...
+    const sport = section.getAttribute("data-sport");
     const ul = $(".team-list", section);
     const teams = TEAM_DB.filter(t =>
-      t.sport === sport &&
-      t.league === state.tab &&
-      matchSearch(t)
+      t.sport === sport && t.league === state.tab && matchSearch(t)
     );
-    // count
+
     const countSpan = $("[data-count]", section);
     if (countSpan) countSpan.textContent = teams.length;
 
-    // 비우고 다시 채움
     ul.innerHTML = "";
     teams.forEach(team => {
       const li = document.createElement("li");
@@ -312,11 +280,9 @@ function buildLeftLists() {
       itemBtn.dataset.role = "select-team";
       itemBtn.dataset.team = team.id;
 
-      // 로고 미리보기(작게)
       const logoSpan = document.createElement("span");
       logoSpan.className = "team-logo";
-      // SVG 문자열을 data-uri 이미지로 바꿔 썸네일 표기(혹은 직접 innerHTML로 svg 넣어도 됨)
-      logoSpan.innerHTML = team.svg; // 썸네일 용으로 직접 삽입
+      logoSpan.innerHTML = team.svg;
 
       const nameSpan = document.createElement("span");
       nameSpan.className = "team-name";
@@ -340,9 +306,15 @@ function buildLeftLists() {
       btnAway.dataset.team = team.id;
       btnAway.textContent = "상대 팀";
 
-      // 왼쪽 패널 강조 상태 반영
+      // 선택 표시
       if (state.leftPanelSelected.home === team.id) btnHome.classList.add("is-selected");
       if (state.leftPanelSelected.away === team.id) btnAway.classList.add("is-selected");
+
+      // 서로 잠금(같은 팀이 반대 역할로 선택되어 있으면 disable)
+      btnHome.disabled = (state.leftPanelSelected.away === team.id);
+      btnAway.disabled = (state.leftPanelSelected.home === team.id);
+      btnHome.toggleAttribute("aria-disabled", btnHome.disabled);
+      btnAway.toggleAttribute("aria-disabled", btnAway.disabled);
 
       actions.appendChild(btnHome);
       actions.appendChild(btnAway);
@@ -352,7 +324,6 @@ function buildLeftLists() {
       ul.appendChild(li);
     });
 
-    // 접힘 상태 유지(기본 야구만 열어둘 수 있음)
     const expanded = $(".sport-toggle", section)?.getAttribute("aria-expanded") === "true";
     ul.hidden = !expanded;
   });
@@ -368,49 +339,39 @@ function matchSearch(team) {
    오른쪽 패널 렌더
    ========================= */
 function renderRightPanel() {
-  // 배경/글자 색
   el.stage.style.backgroundColor = state.bgColor;
   $$(".team-label, .score, .vs", el.stage).forEach(n => n.style.color = state.textColor);
 
-  // 팀명
   el.homeName.textContent = state.homeTeamId ? getTeam(state.homeTeamId).name : "우리 팀";
   el.awayName.textContent = state.awayTeamId ? getTeam(state.awayTeamId).name : "상대 팀";
 
-  // 점수
   el.homeScore.textContent = state.homeScore;
   el.awayScore.textContent = state.awayScore;
 
-  // 로고(SVG 삽입)
   el.homeLogoBox.innerHTML = state.homeTeamId ? getTeam(state.homeTeamId).svg : placeholderBox();
   el.awayLogoBox.innerHTML = state.awayTeamId ? getTeam(state.awayTeamId).svg : placeholderBox();
 
-  // 입력창 동기화(읽기전용 텍스트)
   el.homeTeamInput.value = state.homeTeamId ? getTeam(state.homeTeamId).name : "";
   el.awayTeamInput.value = state.awayTeamId ? getTeam(state.awayTeamId).name : "";
 
-  // 색상 입력 동기화
   el.textColor.value = state.textColor;
   el.textColorHex.value = state.textColor.toUpperCase();
   el.bgColor.value = state.bgColor;
   el.bgColorHex.value = state.bgColor.toUpperCase();
 }
 
-function placeholderBox() {
-  // 미선택 시 점선 박스 느낌
+function placeholderBox(){
   return `<div style="width:140px;height:140px;border:2px dashed #ddd;border-radius:16px"></div>`;
 }
-
-function getTeam(id) {
-  return TEAM_DB.find(t => t.id === id) || null;
-}
+function getTeam(id){ return TEAM_DB.find(t => t.id === id) || null; }
 
 /* =========================
    이벤트 바인딩
    ========================= */
 function bindEvents() {
   // 탭 전환
-  el.tabDomestic.addEventListener("click", () => { setTab("domestic"); });
-  el.tabOverseas.addEventListener("click", () => { setTab("overseas"); });
+  el.tabDomestic.addEventListener("click", () => setTab("domestic"));
+  el.tabOverseas.addEventListener("click", () => setTab("overseas"));
 
   // 검색
   el.teamSearch.addEventListener("input", e => {
@@ -418,7 +379,7 @@ function bindEvents() {
     buildLeftLists();
   });
 
-  // 아코디언 토글
+  // 아코디언
   el.sportsGroups.addEventListener("click", e => {
     const toggle = e.target.closest(".sport-toggle");
     if (toggle) {
@@ -429,76 +390,69 @@ function bindEvents() {
       ul.hidden = expanded;
       return;
     }
+  });
 
-    // 팀 지정(우리/상대)
-    const setHome = e.target.closest('[data-role="set-home"]');
-    const setAway = e.target.closest('[data-role="set-away"]');
-
-    if (setHome) {
-      const id = setHome.dataset.team;
-      state.homeTeamId = id;
-      state.leftPanelSelected.home = id; // 왼쪽 패널 표시만
-      renderRightPanel();
-      buildLeftLists(); // 버튼 강조 반영
+  // 좌측 패널 버튼(우리/상대) 클릭 위임: 상호배타 + 토글
+  el.leftPanel.addEventListener("click", e => {
+    const homeBtn = e.target.closest('[data-role="set-home"]');
+    const awayBtn = e.target.closest('[data-role="set-away"]');
+    if (homeBtn) {
+      e.preventDefault();
+      selectTeam("home", homeBtn.dataset.team);
     }
-    if (setAway) {
-      const id = setAway.dataset.team;
-      state.awayTeamId = id;
-      state.leftPanelSelected.away = id; // 왼쪽 패널 표시만
-      renderRightPanel();
-      buildLeftLists();
+    if (awayBtn) {
+      e.preventDefault();
+      selectTeam("away", awayBtn.dataset.team);
     }
   });
 
-  // 점수 입력
+  // 점수
   el.homeScoreInput.addEventListener("input", e => {
     state.homeScore = clampNonNegativeInt(e.target.value);
-    el.homeScoreInput.value = state.homeScore;
+    e.target.value = state.homeScore;
     renderRightPanel();
   });
   el.awayScoreInput.addEventListener("input", e => {
     state.awayScore = clampNonNegativeInt(e.target.value);
-    el.awayScoreInput.value = state.awayScore;
+    e.target.value = state.awayScore;
     renderRightPanel();
   });
 
-  // 색상 -> HEX 텍스트 동기화 (양방향)
-  el.textColor.addEventListener("input", e => {
-    state.textColor = normalizeHex(e.target.value);
-    renderRightPanel();
-  });
-  el.textColorHex.addEventListener("input", e => {
-    const hex = normalizeHex(e.target.value);
-    if (hex) state.textColor = hex;
-    renderRightPanel();
-  });
-  el.bgColor.addEventListener("input", e => {
-    state.bgColor = normalizeHex(e.target.value);
-    renderRightPanel();
-  });
-  el.bgColorHex.addEventListener("input", e => {
-    const hex = normalizeHex(e.target.value);
-    if (hex) state.bgColor = hex;
-    renderRightPanel();
-  });
+  // 색상
+  el.textColor.addEventListener("input", e => { state.textColor = normalizeHex(e.target.value); renderRightPanel(); });
+  el.textColorHex.addEventListener("input", e => { const hex = normalizeHex(e.target.value); if (hex) state.textColor = hex; renderRightPanel(); });
+  el.bgColor.addEventListener("input", e => { state.bgColor = normalizeHex(e.target.value); renderRightPanel(); });
+  el.bgColorHex.addEventListener("input", e => { const hex = normalizeHex(e.target.value); if (hex) state.bgColor = hex; renderRightPanel(); });
 
-  // 왼쪽만 초기화
-  el.resetLeft.addEventListener("click", () => {
-    state.search = "";
-    if (el.teamSearch) el.teamSearch.value = "";
-    state.leftPanelSelected.home = null;
-    state.leftPanelSelected.away = null;
-    // 오른쪽의 실제 선택/점수/색상은 유지
-    buildLeftLists();
-  });
+  // ★ 전체 초기화
+  el.resetLeft.addEventListener("click", resetAll);
 
   // 다운로드
-  el.downloadBtn.addEventListener("click", () => downloadComposite());
+  el.downloadBtn.addEventListener("click", downloadComposite);
 }
 
-function setTab(tab) {
+// 역할 선택: 상호배타 + 토글
+function selectTeam(role, teamId) {
+  const other = (role === "home") ? "away" : "home";
+
+  // 같은 팀이 반대 역할로 이미 선택되어 있으면 허용 불가(먼저 해제 필요)
+  if (state.leftPanelSelected[other] === teamId) return;
+
+  // 같은 역할에 같은 팀이 이미 있으면 → 해제(토글)
+  if (state.leftPanelSelected[role] === teamId) {
+    state.leftPanelSelected[role] = null;
+    state[role + "TeamId"] = null;
+  } else {
+    // 다른 팀으로 교체
+    state.leftPanelSelected[role] = teamId;
+    state[role + "TeamId"] = teamId;
+  }
+  renderRightPanel();
+  buildLeftLists();
+}
+
+function setTab(tab){
   state.tab = tab;
-  // ARIA 업데이트
   el.tabDomestic.setAttribute("aria-selected", String(tab === "domestic"));
   el.tabOverseas.setAttribute("aria-selected", String(tab === "overseas"));
   buildLeftLists();
@@ -507,179 +461,44 @@ function setTab(tab) {
 /* =========================
    유틸
    ========================= */
-function clampNonNegativeInt(v) {
-  const n = parseInt(v, 10);
-  if (Number.isNaN(n) || n < 0) return 0;
-  return n;
-}
-
-function normalizeHex(v) {
-  if (!v) return "#000000";
-  let x = v.trim().toUpperCase();
-  if (!x.startsWith("#")) x = "#" + x;
-  // #RGB를 #RRGGBB로 확장
-  if (/^#([0-9A-F]{3})$/.test(x)) {
-    const r = x[1], g = x[2], b = x[3];
-    x = `#${r}${r}${g}${g}${b}${b}`;
-  }
-  if (/^#([0-9A-F]{6})$/.test(x)) return x;
-  return null;
+function clampNonNegativeInt(v){ const n = parseInt(v,10); return (Number.isNaN(n)||n<0)?0:n; }
+function normalizeHex(v){
+  if(!v) return "#000000";
+  let x=v.trim().toUpperCase(); if(!x.startsWith("#")) x="#"+x;
+  if(/^#([0-9A-F]{3})$/.test(x)){ const r=x[1],g=x[2],b=x[3]; x=`#${r}${r}${g}${g}${b}${b}`; }
+  if(/^#([0-9A-F]{6})$/.test(x)) return x;
+  return "#000000";
 }
 
 /* =========================
-   다운로드 (SVG 합성 → PNG/SVG)
-   - SVG 내부에 팀 로고 SVG를 <g>로 삽입
-   - 텍스트/스코어/색상 반영
+   전체 초기화
+   ========================= */
+function resetAll(){
+  // 검색/탭
+  state.search = ""; if (el.teamSearch) el.teamSearch.value = "";
+  setTab("domestic");
+
+  // 선택/점수/색상
+  state.homeTeamId = null;
+  state.awayTeamId = null;
+  state.leftPanelSelected.home = null;
+  state.leftPanelSelected.away = null;
+  state.homeScore = 0; state.awayScore = 0;
+  state.textColor = "#000000"; state.bgColor = "#FFFFFF";
+
+  // 입력값 동기화
+  el.homeScoreInput.value = "0";
+  el.awayScoreInput.value = "0";
+  el.textColor.value = state.textColor; el.textColorHex.value = state.textColor;
+  el.bgColor.value = state.bgColor;     el.bgColorHex.value = state.bgColor;
+
+  renderRightPanel();
+  buildLeftLists();
+}
+
+/* =========================
+   다운로드 (SVG 합성 → PNG)
    ========================= */
 function downloadComposite() {
-  // 크기(노션 커버 비율 느낌)
-  const W = 1600, H = 640;
-  const padding = 60;
-  const logoBox = 280; // 로고 최대 한 변
-
-  // 텍스트/색상
-  const tColor = state.textColor;
-  const bg = state.bgColor;
-
-  // 팀 데이터
-  const home = state.homeTeamId ? getTeam(state.homeTeamId) : null;
-  const away = state.awayTeamId ? getTeam(state.awayTeamId) : null;
-
-  // 로고 그룹(없으면 점선 박스)
-  const homeLogo = home ? wrapSVG(home.svg, logoBox, logoBox) : dashedRect(logoBox, logoBox, "#DDDDDD");
-  const awayLogo = away ? wrapSVG(away.svg, logoBox, logoBox) : dashedRect(logoBox, logoBox, "#DDDDDD");
-
-  // 텍스트 요소(팀명/점수)
-  const homeName = (home?.name || "우리 팀");
-  const awayName = (away?.name || "상대 팀");
-
-  // SVG 문자열 생성
-  const svg = `
-<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-  <rect width="100%" height="100%" fill="${bg}"/>
-  <!-- 좌우 로고 -->
-  <g transform="translate(${W/2 - 420}, ${H/2 - logoBox/2 - 40})">${homeLogo}</g>
-  <g transform="translate(${W/2 + 140}, ${H/2 - logoBox/2 - 40})">${awayLogo}</g>
-
-  <!-- VS -->
-  <text x="${W/2}" y="${H/2 - 40}" fill="${tColor}" text-anchor="middle"
-        font-family="Inter, Pretendard, Arial, sans-serif" font-weight="700" font-size="80">vs</text>
-
-  <!-- 점수 -->
-  <text x="${W/2 - 280}" y="${H/2 + logoBox/2 + 80}" fill="${tColor}" text-anchor="middle"
-        font-family="Inter, Pretendard, Arial, sans-serif" font-weight="800" font-size="96">${state.homeScore}</text>
-  <text x="${W/2 + 280}" y="${H/2 + logoBox/2 + 80}" fill="${tColor}" text-anchor="middle"
-        font-family="Inter, Pretendard, Arial, sans-serif" font-weight="800" font-size="96">${state.awayScore}</text>
-
-  <!-- 팀명 -->
-  <text x="${W/2 - 280}" y="${H/2 + logoBox/2 + 150}" fill="${tColor}" text-anchor="middle"
-        font-family="Inter, Pretendard, Arial, sans-serif" font-weight="600" font-size="36">${escapeXML(homeName)}</text>
-  <text x="${W/2 + 280}" y="${H/2 + logoBox/2 + 150}" fill="${tColor}" text-anchor="middle"
-        font-family="Inter, Pretendard, Arial, sans-serif" font-weight="600" font-size="36">${escapeXML(awayName)}</text>
-</svg>`.trim();
-
-  // 파일로 저장 (SVG, PNG)
-  downloadAs("cover.svg", "image/svg+xml;charset=utf-8", svg);
-
-  // PNG도 같이 내려주기
-  svgToPng(svg, W, H).then(pngBlob => {
-    const url = URL.createObjectURL(pngBlob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "cover.png";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  });
-}
-
-function wrapSVG(svgString, maxW, maxH) {
-  // 주어진 SVG를 viewBox 기준으로 maxW/maxH 안에 들어가게 scale & center
-  const vb = getViewBox(svgString) || [0,0,512,512];
-  const vbW = vb[2], vbH = vb[3];
-  const scale = Math.min(maxW / vbW, maxH / vbH);
-  const tx = (maxW - vbW * scale) / 2;
-  const ty = (maxH - vbH * scale) / 2;
-
-  // 외부 fill/clipPath 영향 없도록 <g>로 감싸고 transform 적용
-  return `<g transform="translate(${tx},${ty}) scale(${scale})">${stripOuterSVG(svgString)}</g>`;
-}
-
-function dashedRect(w, h, color) {
-  return `<rect width="${w}" height="${h}" rx="16" ry="16" fill="none" stroke="${color}" stroke-width="4" stroke-dasharray="8 8"/>`;
-}
-
-function getViewBox(svgString) {
-  const m = svgString.match(/viewBox\s*=\s*["']([\d\.\s\-]+)["']/i);
-  if (!m) return null;
-  const nums = m[1].trim().split(/\s+/).map(Number);
-  if (nums.length === 4 && nums.every(n => !isNaN(n))) return nums;
-  return null;
-}
-
-function stripOuterSVG(svgString) {
-  // <svg ...> ... </svg> -> 내부만
-  return svgString
-    .replace(/^[\s\S]*?<svg[^>]*>/i, "")
-    .replace(/<\/svg>\s*$/i, "");
-}
-
-function escapeXML(str) {
-  return String(str)
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&apos;");
-}
-
-function downloadAs(filename, mime, data) {
-  const blob = new Blob([data], { type: mime });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-}
-
-function svgToPng(svgString, width, height) {
-  return new Promise((resolve) => {
-    const svgBlob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
-    const url = URL.createObjectURL(svgBlob);
-    const img = new Image();
-    img.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = width;
-      canvas.height = height;
-      const ctx = canvas.getContext("2d");
-      ctx.drawImage(img, 0, 0, width, height);
-      canvas.toBlob((blob) => {
-        URL.revokeObjectURL(url);
-        resolve(blob);
-      }, "image/png");
-    };
-    img.src = url;
-  });
-}
-    
-// 왼쪽 패널 강조 상태 반영
-if (state.leftPanelSelected.home === team.id) btnHome.classList.add("is-selected");
-if (state.leftPanelSelected.away === team.id) btnAway.classList.add("is-selected");
-
-// ★ 같은 팀은 양쪽 역할 동시 지정 금지: 한쪽이 선택되면 반대쪽은 비활성화
-if (state.leftPanelSelected.home === team.id) {
-  btnAway.disabled = true;
-  btnAway.setAttribute("aria-disabled", "true");
-}
-if (state.leftPanelSelected.away === team.id) {
-  btnHome.disabled = true;
-  btnHome.setAttribute("aria-disabled", "true");
-}
-</script>
-
-</body>
-</html>
+  const W=1600,H=640,logoBox=280;
+  const tColor=state.te
