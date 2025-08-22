@@ -251,8 +251,15 @@ const el = {
 };
 
 /* ===== 초기화 ===== */
-init();
-function init(){ buildLeftLists(); bindEvents(); renderRightPanel(); }
+-init();
++document.addEventListener('DOMContentLoaded', init);
+
+function init(){
+  buildLeftLists();
+  bindEvents();
+  renderRightPanel();
+}
+
 
 /* =========================
    왼쪽 패널 구축
