@@ -272,6 +272,34 @@ img{max-width:100%;height:auto;display:block}
   margin-bottom: 12px;   /* 아래 스테이지와 간격 */
 }
 
+/* 다운로드 버튼 색상 + 정렬 */
+#download-btn{
+  background: #121212;         /* 버튼 배경 */
+  color: #ffffff;              /* 텍스트(=아이콘) 색 */
+  border-color: #121212;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;                    /* 아이콘과 텍스트 간격 */
+}
+
+/* 아이콘: SVG를 마스크로 불러와서 버튼 color로 칠함 */
+#download-btn .icon{
+  width: 18px;
+  height: 18px;
+  background: currentColor;    /* #ffffff */
+  -webkit-mask: url("icons/download.svg") no-repeat center / 100% 100%;
+          mask: url("icons/download.svg") no-repeat center / 100% 100%;
+}
+
+/* (선택) 호버/포커스 상태 */
+#download-btn:hover,
+#download-btn:focus{
+  filter: brightness(1.05);
+  outline: none;
+}
+
+
+
 /* =========================
    Misc
    ========================= */
