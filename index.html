@@ -522,15 +522,47 @@ function bindEvents() {
     renderRightPanel();
   });
 
-  // 왼쪽만 초기화
-  el.resetLeft.addEventListener("click", () => {
-    state.search = "";
-    if (el.teamSearch) el.teamSearch.value = "";
-    state.leftPanelSelected.home = null;
-    state.leftPanelSelected.away = null;
-    // 오른쪽의 실제 선택/점수/색상은 유지
-    buildLeftLists();
+  // 전체 초기화
+el.resetLeft.addEventListener("click", () => {
+  // 1) 상태 기본값
+  state.tab = "domestic";
+  state.search = "";
+  state.homeTeamId = null;
+  state.awayTeamId = null;
+  state.homeScore = 0;
+  state.awayScore = 0;
+  state.textColor = "#000000";
+  state.bgColor = "#FFFFFF";
+  state.leftPanelSelected.home = null;
+  state.leftPanelSelected.away = null;
+
+  // 2) 입력값 초기화
+  if (el.teamSearch) el.teamSearch.value = "";
+  el.homeScoreInput.value = 0;
+  el.awayScoreInput.value = 0;
+  el.textColor.value = "#000000";
+  el.textColorHex.value = "#000000";
+  el.bgColor.value = "#FFFFFF";
+  el.bgColorHex.value = "#FFFFFF";
+
+  // 3) 탭 상태 초기화 (국내 선택)
+  el.tabDomestic.setAttribute("aria-selected", "true");
+  el.tabOverseas.setAttribute("aria-selected", "false");
+
+  // 4) 아코디언 초기화 (야구만 펼침, 나머지 접힘)
+  $$(".sport-group", el.sportsGroups).forEach(section => {
+    const isBaseball = section.getAttribute("data-sport") === "baseball";
+    const toggle = $(".sport-toggle", section);
+    const ul = $(".team-list", section);
+    if (toggle) toggle.setAttribute("aria-expanded", String(isBaseball));
+    if (ul) ul.hidden = !isBaseball;
   });
+
+  // 5) 다시 렌더
+  buildLeftLists();
+  renderRightPanel();
+});
+
 
   // 다운로드
   el.downloadBtn.addEventListener("click", () => downloadComposite());
