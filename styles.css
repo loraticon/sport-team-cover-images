@@ -39,7 +39,6 @@
 *{box-sizing:border-box}
 html, body{
   width:100%;
-  height:100%;
   overflow-x:hidden;         /* 가로 스크롤 방지 */
 }
 body{
@@ -54,8 +53,10 @@ img{max-width:100%;height:auto;display:block}
 /* 공통 컨테이너: 화면을 절대 넘지 않게 */
 .app-header,
 .layout{
-  inline-size:min(var(--container-max), 100% - (var(--page-pad) * 2));
-  margin-inline:auto;
+  /* 좌우 24px 마진만 두고, 최대폭은 더 넓게(1512px) */
+  --page-pad:24px;
+  inline-size: min(1512px, 100% - (var(--page-pad) * 2));
+  margin-inline: auto;
 }
 
 /* =========================
@@ -71,9 +72,8 @@ img{max-width:100%;height:auto;display:block}
    Layout grid
    ========================= */
 .layout{
-  margin:16px auto 40px;
-  display:grid; gap:var(--gap-xl);
-  grid-template-columns:minmax(0, var(--left-col)) minmax(0, 1fr); /* 줄어들 수 있게 */
+  grid-template-columns: minmax(0, 576px) minmax(0, 1fr);
+  column-gap: 32px;
 }
 @media (max-width: 1200px){
   .layout{grid-template-columns:1fr}
@@ -154,6 +154,7 @@ img{max-width:100%;height:auto;display:block}
   border:1px dashed var(--gray-400);
   border-radius:16px;
   background:#fff;
+  padding: 24px; 
 
   display:flex;
   align-items:center;
