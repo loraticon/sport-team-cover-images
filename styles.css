@@ -29,7 +29,6 @@
   --shadow:0 6px 24px rgba(0,0,0,.06);
 
   /* preview */
-  --stage-h:420px;
   --logo-box:250px;          /* 오른쪽 로고 박스 */
   --sides-gap:238px;
 }
@@ -148,11 +147,34 @@ img{max-width:100%;height:auto;display:block}
 }
 .preview-toolbar{display:flex;justify-content:flex-end}
 .preview-stage{
-  margin-top:var(--gap-md);
-  background:#fff;border-radius:16px;border:1px dashed var(--gray-400);
-  height:var(--stage-h);
-  display:flex;align-items:center;justify-content:center;gap:var(--sides-gap);position:relative;
+  /* 폭/테두리/배경은 유지 */
+  width: 100%;
+  border: 1px dashed var(--gray-400);
+  border-radius: 16px;
+  background: #fff;
+
+  /* 레이아웃 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 238px;
+
+  /* 높이 정책: 고정 height 제거하고 여유 확보 */
+  height: auto;
+  min-height: 600px;         /* 560~640px 사이에서 취향 맞추기 */
+  padding: 40px 24px 96px;   /* 상 40 / 좌우 24 / 하 96으로 점수 여유 */
+
+  /* 잘림 방지 */
+  overflow: visible;
 }
+
+/* 점수 타이포 안정화 */
+.score{
+  font-size: 64px;
+  line-height: 1;
+  margin-top: 16px;
+}
+
 .preview-stage .vs{font-size:56px;font-weight:700;color:#121212}
 
 .side{display:flex;flex-direction:column;align-items:center;gap:12px}
@@ -250,15 +272,6 @@ img{max-width:100%; height:auto; display:block;}
 /* 카테고리 아이콘 PNG 고정 크기 */
 .sport-toggle .icon{width:20px; height:20px; display:inline-flex; align-items:center; justify-content:center;}
 .sport-toggle .icon img{width:100%; height:100%; object-fit:contain; display:block;}
-
-
-/* 점수가 잘리는 문제 해결 */
-.preview-stage{
-  /* 상단 40, 좌우 24, 하단 80px 여유 */
-  padding: 40px 24px 80px;
-  min-height: 560px;          /* 로고(250) + 라벨 + 점수(64) + 여백 고려하여 넉넉히 */
-  overflow: visible;          /* 내용이 잘리지 않도록 */
-}
 
 .score{
   font-size: 64px;
