@@ -358,5 +358,41 @@ a, a:visited {
   /* 미리보기 스테이지는 별도 카드에서 조정하므로 여기선 생략 가능 */
 }
 
+/* === iPhone용 강제 덮어쓰기: 모바일(≤640px)에서 탭/리스트 크기 컴팩트하게 === */
+@media (max-width: 640px){
+
+  /* 탭(국내/해외): 어떤 마크업이든 자식 전체를 강제 덮어쓰기 */
+  .tabs > * {
+    height: 48px !important;
+    padding: 0 14px !important;
+    font-size: 16px !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+    -webkit-appearance: none !important;
+    appearance: none !important;
+  }
+
+  /* 종목 아코디언 헤더 */
+  .sport-toggle{
+    padding: 12px 12px !important;
+    font-size: 16px !important;
+  }
+
+  /* 팀 리스트 행/썸네일/버튼 */
+  .team-item{ padding: 12px 0 !important; gap: 10px !important; }
+  .team-logo{ width: 48px !important; height: 48px !important; flex: 0 0 48px !important; }
+  .team-name{ font-size: 16px !important; }
+  .btn-mini{ height: 28px !important; padding: 0 8px !important; font-size: 12px !important; }
+
+  /* 미리보기 스테이지(필요 시만 조정) */
+  .preview-stage{
+    min-height: 560px !important;
+    padding: 28px 16px 112px !important; /* 하단 넉넉히(점수 잘림 방지) */
+    gap: 104px !important;
+  }
+}
 
 
