@@ -318,58 +318,44 @@ a, a:visited {
   }
 }
 
-/* ===== 모바일(≤640px)에서 실제 마크업에 맞춰 강제 적용 ===== */
+/* ===== 모바일(≤640px) 밀도 조정: 두 번째 이미지 느낌으로 컴팩트하게 ===== */
 @media (max-width: 640px){
 
-  /* 탭: role="tab"이 없더라도 버튼/클래스 기반으로 모두 매칭 */
+  /* 탭: 두 개가 나란히, 높이/폰트 축소 */
+  .tabs{
+    display: grid;
+    grid-template-columns: 1fr 1fr;  /* 반드시 2열 유지 */
+    gap: 12px;
+  }
   .tabs [role="tab"],
   .tabs .tab,
-  .tabs button {
-    height: 56px;              /* 80 → 56로 더 컴팩트 */
-    padding: 0 16px;
-    font-size: 18px;
+  .tabs button{
+    height: 48px;                   /* 80→48 (이전 56도 OK) */
+    padding: 0 14px;
+    font-size: 16px;                /* 18→16 */
     border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1; -webkit-appearance: none; appearance: none;
   }
 
-  /* 아코디언/팀행도 살짝 압축 */
-  .sport-toggle{ padding: 12px 12px; }
-  .team-item{ padding: 12px 4px; }
+  /* 검색창: iOS 줌 방지를 위해 16px 유지, 여백만 축소 */
+  .search-box{ padding: 10px 12px; }
+  .search-box input{ font-size: 16px; }
+  .search-box .icon-search{ width: 18px; height: 18px; }
+
+  /* 아코디언 헤더(종목): 폰트/패딩 축소 */
+  .sport-toggle{
+    padding: 12px;
+    font-size: 16px;               /* 18→16 */
+  }
+
+  /* 팀 리스트: 썸네일/이름/버튼 모두 살짝 축소 */
+  .team-item{ padding: 12px 0; gap: 10px; }
   .team-logo{ width: 48px; height: 48px; flex: 0 0 48px; }
+  .team-name{ font-size: 16px; }   /* 18→16 */
+  .btn-mini{ height: 28px; padding: 0 8px; font-size: 12px; }
 
-  /* 미리보기 스테이지: 하단 여백 넉넉히(점수 잘림 방지) */
-  .preview-stage{
-    min-height: 560px;         /* 필요시 520~600 사이 조정 */
-    padding: 28px 16px 112px;  /* 상/좌우/하 */
-    gap: 104px;                /* 좌/우 로고 간격(모바일) */
-  }
-
-  /* 카드 패딩도 모바일 밀도에 맞게 */
-  .preview-card,
-  .controls{ padding: 16px; }
-}
-
-/* iOS에서 버튼 텍스트 잘림 방지 + 세로 가운데정렬 강제 */
-.tabs [role="tab"],
-.tabs .tab,
-.tabs button {
-  display: flex;                 /* 버튼 내용 박스를 flex로 */
-  align-items: center;           /* 세로 가운데 */
-  justify-content: center;       /* 가로 가운데 */
-  line-height: 1;                /* iOS 기본 line-height 영향 제거 */
-  -webkit-appearance: none;      /* iOS 기본 버튼 외형 제거 */
-  appearance: none;
-  padding: 0 16px;               /* 좌우 여백 */
-}
-
-/* 모바일에서 탭 높이 축소(이미 있는 규칙 보강) */
-@media (max-width: 640px){
-  .tabs [role="tab"],
-  .tabs .tab,
-  .tabs button {
-    height: 56px;                /* 64 또는 56 중 선택 — 56이 더 컴팩트 */
-    font-size: 18px;
-    border-radius: 12px;
-  }
+  /* 미리보기 스테이지는 별도 카드에서 조정하므로 여기선 생략 가능 */
 }
 
 
