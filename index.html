@@ -403,6 +403,10 @@ function matchSearch(team) {
   return norm(team.name).includes(q) || norm(team.id).includes(q);
 }
 
+function logoPath(team) {
+return `${LOGO_BASE}/${LEAGUE_DIR[team.league]}/${SPORT_DIR[team.sport]}/${team.id}.svg`;
+}
+
 /* =========================
    오른쪽 패널 렌더
    ========================= */
