@@ -358,12 +358,12 @@ a, a:visited {
   /* 미리보기 스테이지는 별도 카드에서 조정하므로 여기선 생략 가능 */
 }
 
-/* === iPhone용 강제 덮어쓰기: 모바일(≤640px)에서 탭/리스트 크기 컴팩트하게 === */
+/* ===== 모바일(≤640px)에서 컴팩트하게 강제 덮어쓰기 ===== */
 @media (max-width: 640px){
 
-  /* 탭(국내/해외): 어떤 마크업이든 자식 전체를 강제 덮어쓰기 */
+  /* 탭(국내/해외) — 어떤 마크업이어도 자식 전체를 덮음 */
   .tabs > * {
-    height: 48px !important;
+    height: 48px !important;          /* 80 → 48 */
     padding: 0 14px !important;
     font-size: 16px !important;
     border-radius: 12px !important;
@@ -378,21 +378,25 @@ a, a:visited {
   /* 종목 아코디언 헤더 */
   .sport-toggle{
     padding: 12px 12px !important;
-    font-size: 16px !important;
+    font-size: 16px !important;       /* 18 → 16 */
   }
 
-  /* 팀 리스트 행/썸네일/버튼 */
+  /* 팀 리스트/썸네일/액션 버튼 */
   .team-item{ padding: 12px 0 !important; gap: 10px !important; }
   .team-logo{ width: 48px !important; height: 48px !important; flex: 0 0 48px !important; }
   .team-name{ font-size: 16px !important; }
   .btn-mini{ height: 28px !important; padding: 0 8px !important; font-size: 12px !important; }
 
-  /* 미리보기 스테이지(필요 시만 조정) */
+  /* 미리보기 스테이지(점수 잘림 방지 + 여백 최적화) */
   .preview-stage{
     min-height: 560px !important;
-    padding: 28px 16px 112px !important; /* 하단 넉넉히(점수 잘림 방지) */
+    padding: 28px 16px 112px !important;   /* 상/좌우/하 */
     gap: 104px !important;
   }
-}
 
+  /* 검색 박스는 iOS 확대 방지 위해 16px 유지, 여백만 축소 */
+  .search-box{ padding: 10px 12px !important; }
+  .search-box input{ font-size: 16px !important; }
+  .search-box .icon-search{ width: 18px !important; height: 18px !important; }
+}
 
