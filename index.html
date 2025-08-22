@@ -549,14 +549,13 @@ el.resetLeft.addEventListener("click", () => {
   el.tabDomestic.setAttribute("aria-selected", "true");
   el.tabOverseas.setAttribute("aria-selected", "false");
 
-  // 4) 아코디언 초기화 (야구만 펼침, 나머지 접힘)
-  $$(".sport-group", el.sportsGroups).forEach(section => {
-    const isBaseball = section.getAttribute("data-sport") === "baseball";
-    const toggle = $(".sport-toggle", section);
-    const ul = $(".team-list", section);
-    if (toggle) toggle.setAttribute("aria-expanded", String(isBaseball));
-    if (ul) ul.hidden = !isBaseball;
-  });
+  // 4) 아코디언 초기화 (모두 접기)
+$$(".sport-group", el.sportsGroups).forEach(section => {
+  const toggle = $(".sport-toggle", section);
+  const ul = $(".team-list", section);
+  if (toggle) toggle.setAttribute("aria-expanded", "false");
+  if (ul) ul.hidden = true;
+});
 
   // 5) 다시 렌더
   buildLeftLists();
