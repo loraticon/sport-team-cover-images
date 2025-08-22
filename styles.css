@@ -250,14 +250,32 @@ img{max-width:100%;height:auto;display:block}
 .team-label{font-size:24px;color:var(--gray-500);font-weight:700;line-height:1.2}
 .score{font-size:64px;font-weight:700;line-height:1;margin-top:16px}
 
+/* 1) 그리드 아이템이 트랙 안에서 줄어들 수 있게 */
+.layout > * { min-width: 0; }   /* 좌/우 패널 공통 */
+.panel-right { min-width: 0; }  /* 안전하게 한 번 더 */
+
 /* =========================
    Controls (오른쪽 하단 폼)
    ========================= */
-.controls{display:grid;grid-template-columns:1fr 1fr;gap:14px 16px}
+.controls{display:grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap:14px 16px}
 .control-row{
   display:flex;align-items:center;gap:12px;background:var(--gray-200);
   border:1px solid var(--gray-400);border-radius:12px;padding:16px 12px
 }
+
+/* 3) 행/입력 요소도 최소폭 강제 해제 */
+.control-row { min-width: 0; }
+.controls input[type="text"],
+.controls input[type="number"]{
+  min-width: 0;
+  width: 100%;
+}
+
+/* (선택) 화면이 좀 더 좁아지면 1열로 빨리 전환하고 싶을 때 임계값 상향 */
+@media (max-width: 900px){
+  .controls{ grid-template-columns: 1fr; }
+}
+
 .control-label{min-width:120px;font-weight:700}
 .controls input[type="text"], .controls input[type="number"]{
   flex:1;height:44px;border:1px solid var(--gray-300);border-radius:10px;padding:0 12px;background:#fff
