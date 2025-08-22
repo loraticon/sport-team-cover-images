@@ -352,9 +352,42 @@ function buildLeftLists() {
       ul.appendChild(li);
     });
 
-    // 접힘 상태 유지(기본 야구만 열어둘 수 있음)
-    const expanded = $(".sport-toggle", section)?.getAttribute("aria-expanded") === "true";
-    ul.hidden = !expanded;
+      function buildLeftLists() {
+  const sections = $$(".sport-group", el.sportsGroups);
+  sections.forEach(section => {
+    const sport = section.getAttribute("data-sport");
+    const ul = $(".team-list", section);
+    const toggleBtn = $(".sport-toggle", section); // ⬅️ 추가
+
+    const teams = TEAM_DB.filter(t =>
+      t.sport === sport &&
+      t.league === state.tab &&
+      matchSearch(t)
+    );
+
+    const countSpan = $("[data-count]", section);
+    if (countSpan) countSpan.textContent = teams.length;
+
+    // 리스트 다시 그림 ...
+    ul.innerHTML = "";
+    teams.forEach(team => {
+      /* 기존 li 생성 코드 그대로 */
+    });
+
+    // ⬇️ 여기부터 교체: 검색어가 있으면 결과 있는 섹션만 펼치기
+    if (state.search && state.search.trim() !== "") {
+      const shouldOpen = teams.length > 0;
+      toggleBtn?.setAttribute("aria-expanded", String(shouldOpen));
+      ul.hidden = !shouldOpen;
+    } else {
+      // 검색어 없으면 기존 토글 상태 유지
+      const expanded = toggleBtn?.getAttribute("aria-expanded") === "true";
+      ul.hidden = !expanded;
+    }
+  });
+}
+
+    
   });
 }
 
