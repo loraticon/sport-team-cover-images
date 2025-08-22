@@ -314,7 +314,8 @@ const el = {
 /* ===== 초기 렌더링 ===== */
 init();
 
-function init() {
+async function init() {
+  await preloadTeamLogos();   // ⬅️ 파일에서 SVG 읽어 team.svg 채움
   buildLeftLists();
   bindEvents();
   renderRightPanel();
