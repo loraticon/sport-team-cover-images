@@ -348,4 +348,29 @@ a, a:visited {
   .controls{ padding: 16px; }
 }
 
+/* iOS에서 버튼 텍스트 잘림 방지 + 세로 가운데정렬 강제 */
+.tabs [role="tab"],
+.tabs .tab,
+.tabs button {
+  display: flex;                 /* 버튼 내용 박스를 flex로 */
+  align-items: center;           /* 세로 가운데 */
+  justify-content: center;       /* 가로 가운데 */
+  line-height: 1;                /* iOS 기본 line-height 영향 제거 */
+  -webkit-appearance: none;      /* iOS 기본 버튼 외형 제거 */
+  appearance: none;
+  padding: 0 16px;               /* 좌우 여백 */
+}
+
+/* 모바일에서 탭 높이 축소(이미 있는 규칙 보강) */
+@media (max-width: 640px){
+  .tabs [role="tab"],
+  .tabs .tab,
+  .tabs button {
+    height: 56px;                /* 64 또는 56 중 선택 — 56이 더 컴팩트 */
+    font-size: 18px;
+    border-radius: 12px;
+  }
+}
+
+
 
