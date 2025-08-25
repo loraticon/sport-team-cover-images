@@ -489,7 +489,9 @@ a, a:visited {
 }
 
 /* 태블릿 가로(아이패드 9세대 포함) 전용 조정 */
-@media (orientation: landscape) and (min-width: 900px) and (max-width: 1180px){
+@media (orientation: landscape) and (min-width: 1024px) and (max-width: 1180px){
+
+   .controls{ grid-template-columns: 1fr; }
 
   /* 1) 크기/간격 변수 덮어쓰기 */
   :root{
