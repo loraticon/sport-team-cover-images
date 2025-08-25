@@ -1117,38 +1117,38 @@ function afterDomReadyAttachAutocomplete(){
    ========================= */
 // PNG만 저장, 로고 SVG는 ensureTeamSvg로 확보
 async function downloadComposite() {
-  // 아트보드
   const W = 1160, H = 400;
-  const padding = 60;
-  const logoBox = 240;
-  const gap = 200;   // 중앙 기준 로고와의 간격
+
+  // ===== 원하는 스케일/배치만 여기서 조정 =====
+  const logoBox   = 240;   // 로고 크기(정사각형 상자 한 변) 280 → 240
+  const gap       = 200;   // 중앙 기준 로고와의 간격
   const vsSize    = 88;    // "VS" 글자 크기 80 → 88
   const scoreSize = 128;   // 점수 크기 96 → 128
   const logoDy    = -10;   // 로고 상하 미세조정(-는 위로)
   const scoreDy   = 100;   // 점수 상하 미세조정(+는 아래로)
+  // =======================================
 
-  // 스타일
   const tColor = state.textColor;
-  const bg = state.bgColor;
+  const bg     = state.bgColor;
 
-  // 팀 데이터
   const home = state.homeTeamId ? getTeam(state.homeTeamId) : null;
   const away = state.awayTeamId ? getTeam(state.awayTeamId) : null;
 
-  // 로고 SVG 문자열 확보 (없으면 fetch해서 team.svg 채움)
   const homeSvg = await ensureTeamSvg(home);
   const awaySvg = await ensureTeamSvg(away);
 
-  const homeLogo = homeSvg ? wrapSVG(homeSvg, logoBox, logoBox, `home-${home?.id}-`) : dashedRect(logoBox, logoBox, "#DDDDDD");
-  const awayLogo = awaySvg ? wrapSVG(awaySvg, logoBox, logoBox, `away-${away?.id}-`) : dashedRect(logoBox, logoBox, "#DDDDDD");
+  const homeLogo = homeSvg ? wrapSVG(homeSvg, logoBox, logoBox, `home-${home?.id}-`)
+                           : dashedRect(logoBox, logoBox, "#DDDDDD");
+  const awayLogo = awaySvg ? wrapSVG(awaySvg, logoBox, logoBox, `away-${away?.id}-`)
+                           : dashedRect(logoBox, logoBox, "#DDDDDD");
 
-  // 배치(B안)
-  const leftLogoX  = W/2 - logoBox - gap;
-  const rightLogoX = W/2 + gap;
-  const logoY      = (H - logoBox)/2 + logoDy;
-  const scoreY     = (H + logoBox)/2 + scoreDy;
-  const rightScoreX = W/2 + (gap + logoBox/2);
+  // 로고/점수 좌표 계산(중앙 기준 대칭 배치)
+  const leftLogoX   = W/2 - logoBox - gap;
+  const rightLogoX  = W/2 + gap;
+  const logoY       = (H - logoBox)/2 + logoDy;
+
   const leftScoreX  = W/2 - (gap + logoBox/2);
+  const rightScoreX = W/2 + (gap + logoBox/2);
   const scoreY      = (H + logoBox)/2 + scoreDy;
 
   const svg = `
@@ -1158,16 +1158,15 @@ async function downloadComposite() {
   <g transform="translate(${rightLogoX}, ${logoY})">${awayLogo}</g>
 
   <text x="${W/2}" y="${H/2 - 40}" fill="${tColor}" text-anchor="middle"
-        font-family="Inter, Pretendard, Arial, sans-serif" font-weight="700" font-size="80">vs</text>
+        font-family="Inter, Pretendard, Arial, sans-serif" font-weight="800" font-size="${vsSize}">VS</text>
 
-  <text x="${W/2 - 280}" y="${scoreY}" fill="${tColor}" text-anchor="middle"
-        font-family="Inter, Pretendard, Arial, sans-serif" font-weight="800" font-size="96">${state.homeScore}</text>
-  <text x="${W/2 + 280}" y="${scoreY}" fill="${tColor}" text-anchor="middle"
-        font-family="Inter, Pretendard, Arial, sans-serif" font-weight="800" font-size="96">${state.awayScore}</text>
+  <text x="${leftScoreX}"  y="${scoreY}" fill="${tColor}" text-anchor="middle"
+        font-family="Inter, Pretendard, Arial, sans-serif" font-weight="800" font-size="${scoreSize}">${state.homeScore}</text>
+  <text x="${rightScoreX}" y="${scoreY}" fill="${tColor}" text-anchor="middle"
+        font-family="Inter, Pretendard, Arial, sans-serif" font-weight="800" font-size="${scoreSize}">${state.awayScore}</text>
 </svg>
   `.trim();
 
-  // ✅ PNG만 저장
   const pngBlob = await svgToPng(svg, W, H);
   const url = URL.createObjectURL(pngBlob);
   const a = document.createElement("a");
@@ -1178,7 +1177,6 @@ async function downloadComposite() {
   a.remove();
   URL.revokeObjectURL(url);
 }
-
 // XML/Doctype 제거
 function stripXmlDoctype(svg){
   return svg.replace(/<\?xml[\s\S]*?\?>/ig, "").replace(/<!DOCTYPE[\s\S]*?>/ig, "");
