@@ -206,6 +206,15 @@ const SPORT_DIR = {
   lol: "lol",
 };
 
+async function ensureTeamSvg(team){
+  if (!team) return null;
+  if (team.svg) return team.svg;                 // 이미 있으면 재활용
+  const res = await fetch(logoPath(team), { cache: "no-store" });
+  if (!res.ok) return null;
+  team.svg = await res.text();
+  return team.svg;
+}
+    
 async function preloadTeamLogos() {
   await Promise.all(
     TEAM_DB.map(async (t) => {
@@ -1106,99 +1115,72 @@ function afterDomReadyAttachAutocomplete(){
    - SVG 내부에 팀 로고 SVG를 <g>로 삽입
    - 텍스트/스코어/색상 반영
    ========================= */
-function downloadComposite() {
-  // 크기(노션 커버 비율 느낌)
+async function downloadComposite() {
+  // B안: 1160x400, padding=60, logoBox=280, 팀명은 출력 안 함
   const W = 1160, H = 400;
   const padding = 60;
-  const logoBox = 280; // 로고 최대 한 변
+  const logoBox = 280;
 
   const VS_FONT = 56;
-  const SCORE_FONT = 50;  // 줄임
+  const SCORE_FONT = 50;   // 세로 400에 맞추어 축소
   const GAP_VS = 56;
   const GAP_SCORE = 8;
-  const VS_HALF = 34;     // VS 폭의 절반(대략)
+  const VS_HALF = 34;      // "VS" 가로폭의 절반(대략)
 
-  // 좌표
-  const vsX = W/2;
-  const vsY = padding + logoBox/2;
+  const tColor = state.textColor;
+  const bg = state.bgColor;
+
+  const home = state.homeTeamId ? getTeam(state.homeTeamId) : null;
+  const away = state.awayTeamId ? getTeam(state.awayTeamId) : null;
+
+  // ⬇️ 여기서만 필요한 로고를 로딩
+  const homeSvg = await ensureTeamSvg(home);
+  const awaySvg = await ensureTeamSvg(away);
+
+  // 좌표(스샷 기준)
+  const vsX = W / 2;
+  const vsY = padding + logoBox / 2;
 
   const logoTop    = padding;                             // 60
   const leftLogoX  = vsX - VS_HALF - GAP_VS - logoBox;    // 210
   const rightLogoX = vsX + VS_HALF + GAP_VS;              // 670
 
   const scoreY     = logoTop + logoBox + GAP_SCORE;       // 348
-  const leftScoreX = leftLogoX  + logoBox/2;              // 350
-  const rightScoreX= rightLogoX + logoBox/2;              // 810
+  const leftScoreX  = leftLogoX  + logoBox / 2;           // 350
+  const rightScoreX = rightLogoX + logoBox / 2;           // 810
 
-  // 로고
-  `<g transform="translate(${leftLogoX}, ${logoTop})">${homeLogo}</g>`
-  `<g transform="translate(${rightLogoX}, ${logoTop})">${awayLogo}</g>`
+  // 로고 그룹(B안: 미선택이면 빈 칸)
+  const homeLogo = homeSvg ? wrapSVG(homeSvg, logoBox, logoBox) : "";
+  const awayLogo = awaySvg ? wrapSVG(awaySvg, logoBox, logoBox) : "";
 
-  // VS
-  `<text x="${vsX}" y="${vsY}" text-anchor="middle" dominant-baseline="middle"
-       font-size="${VS_FONT}" font-weight="800">VS</text>`
-
-  // 점수
-  `<text x="${leftScoreX}"  y="${scoreY}"  text-anchor="middle" dominant-baseline="hanging"
-       font-size="${SCORE_FONT}" font-weight="800">${state.homeScore}</text>`
-  `<text x="${rightScoreX}" y="${scoreY}" text-anchor="middle" dominant-baseline="hanging"
-       font-size="${SCORE_FONT}" font-weight="800">${state.awayScore}</text>`
-
-  // 텍스트/색상
-  const tColor = state.textColor;
-  const bg = state.bgColor;
-
-  // 팀 데이터
-  const home = state.homeTeamId ? getTeam(state.homeTeamId) : null;
-  const away = state.awayTeamId ? getTeam(state.awayTeamId) : null;
-
-  // 로고 그룹(없으면 점선 박스)
-  const homeLogo = home ? wrapSVG(home.svg, logoBox, logoBox) : dashedRect(logoBox, logoBox, "#DDDDDD");
-  const awayLogo = away ? wrapSVG(away.svg, logoBox, logoBox) : dashedRect(logoBox, logoBox, "#DDDDDD");
-
-  // 텍스트 요소(팀명/점수)
-  const homeName = (home?.name || "우리 팀");
-  const awayName = (away?.name || "상대 팀");
-
-  // SVG 문자열 생성
   const svg = `
 <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   <rect width="100%" height="100%" fill="${bg}"/>
-  <!-- 좌우 로고 -->
-  <g transform="translate(${W/2 - 420}, ${H/2 - logoBox/2 - 40})">${homeLogo}</g>
-  <g transform="translate(${W/2 + 140}, ${H/2 - logoBox/2 - 40})">${awayLogo}</g>
+  <g transform="translate(${leftLogoX}, ${logoTop})">${homeLogo}</g>
+  <g transform="translate(${rightLogoX}, ${logoTop})">${awayLogo}</g>
 
-  <!-- VS -->
-  <text x="${W/2}" y="${H/2 - 40}" fill="${tColor}" text-anchor="middle"
-        font-family="Inter, Pretendard, Arial, sans-serif" font-weight="700" font-size="80">vs</text>
+  <text x="${vsX}" y="${vsY}" fill="${tColor}" text-anchor="middle" dominant-baseline="middle"
+        font-family="Inter, Pretendard, Arial, sans-serif" font-weight="800" font-size="${VS_FONT}">VS</text>
 
-  <!-- 점수 -->
-  <text x="${W/2 - 280}" y="${H/2 + logoBox/2 + 80}" fill="${tColor}" text-anchor="middle"
-        font-family="Inter, Pretendard, Arial, sans-serif" font-weight="800" font-size="96">${state.homeScore}</text>
-  <text x="${W/2 + 280}" y="${H/2 + logoBox/2 + 80}" fill="${tColor}" text-anchor="middle"
-        font-family="Inter, Pretendard, Arial, sans-serif" font-weight="800" font-size="96">${state.awayScore}</text>
-
-  <!-- 팀명 -->
-  <text x="${W/2 - 280}" y="${H/2 + logoBox/2 + 150}" fill="${tColor}" text-anchor="middle"
-        font-family="Inter, Pretendard, Arial, sans-serif" font-weight="600" font-size="36">${escapeXML(homeName)}</text>
-  <text x="${W/2 + 280}" y="${H/2 + logoBox/2 + 150}" fill="${tColor}" text-anchor="middle"
-        font-family="Inter, Pretendard, Arial, sans-serif" font-weight="600" font-size="36">${escapeXML(awayName)}</text>
+  <text x="${leftScoreX}"  y="${scoreY}" fill="${tColor}" text-anchor="middle" dominant-baseline="hanging"
+        font-family="Inter, Pretendard, Arial, sans-serif" font-weight="800" font-size="${SCORE_FONT}">${state.homeScore}</text>
+  <text x="${rightScoreX}" y="${scoreY}" fill="${tColor}" text-anchor="middle" dominant-baseline="hanging"
+        font-family="Inter, Pretendard, Arial, sans-serif" font-weight="800" font-size="${SCORE_FONT}">${state.awayScore}</text>
 </svg>`.trim();
 
-  // 파일로 저장 (SVG, PNG)
+  // 저장(SVG+PNG)
   downloadAs("cover.svg", "image/svg+xml;charset=utf-8", svg);
+  const pngBlob = await svgToPng(svg, W, H);
+  const url = URL.createObjectURL(pngBlob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "cover.png";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
 
-  // PNG도 같이 내려주기
-  svgToPng(svg, W, H).then(pngBlob => {
-    const url = URL.createObjectURL(pngBlob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "cover.png";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  });
 }
 
 function wrapSVG(svgString, maxW, maxH) {
