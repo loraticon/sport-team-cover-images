@@ -80,34 +80,45 @@ img{max-width:100%;height:auto;display:block}
 
 /* 모바일(<= 640px): 1열로 전환 + 모바일 크기 조정 */
 @media (max-width: 640px){
+  /* 1) 페이지 좌우 여백 줄여 실제 가용폭 확보 */
+  .app-header,
+  .layout{ --page-pad: 12px; } /* 24 → 12 */
+
   .layout{
     grid-template-columns: 1fr;   /* 1열 */
     row-gap: 20px;
   }
-  .panel-right{ margin-top: 16px; } /* 오른쪽 카드들이 위 패널과 간격 */
+  .panel-right{ margin-top: 16px; }
 
-  /* 모바일에서 로고/간격 살짝 축소 */
+  /* 2) 로고 크기를 화면폭에 맞춰 자동 축소 (최소~최대 가드) */
   :root{
-    --logo-box: 160px;   /* 250 → 180 */
-    --sides-gap: 104px;  /* 좌/우 로고 간격 축소 */
+    /* 120px ~ 150px 범위에서 화면폭에 비례해 변하도록 */
+    --logo-box: clamp(120px, 36vw, 150px);
   }
 
+  /* 3) 카드/스테이지 패딩을 살짝 절약 */
   .preview-card,
   .controls{
-    padding: 16px;        /* 카드 패딩을 살짝 줄여줌 */
+    padding: 16px;
   }
 
   .preview-stage{
-    min-height: 520px;    /* 모바일 스테이지 높이 */
-    padding: 28px 16px 88px; /* 상/좌우/하 패딩 */
-    gap: clamp(32px, calc((100% - (2 * var(--logo-box)) - 56px) / 2), 72px);
-     overflow: hidden;
+    min-height: 520px;
+    /* 좌우 12px로 축소 + 하단도 살짝 줄임 */
+    padding: 24px 12px 80px;
+
+    /* gap: 아이템이 컨테이너에 꼭 들어오도록 자동 계산
+       (최솟값 8px, 최댓값 40px 내에서 변동) */
+    gap: clamp(8px, calc((100% - (2 * var(--logo-box)) - 56px) / 2), 40px);
+
+    overflow: hidden;  /* 넘치면 자르기 */
   }
 
-  .score { font-size: 56px; }   /* 64 → 56 */
-   
+  /* 4) 글자 크기도 살짝만 줄이기(선택) */
+  .score{ font-size: clamp(48px, 9vw, 56px); }
+  .preview-stage .vs{ font-size: clamp(44px, 8vw, 56px); }
 
-  .controls{ grid-template-columns: 1fr; } /* 입력 폼도 한 줄 */
+  .controls{ grid-template-columns: 1fr; }
 }
 
 /* (선택) 태블릿 범위에서만 살짝 축소하고 싶다면 */
