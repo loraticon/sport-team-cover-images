@@ -1201,9 +1201,10 @@ function scopeSvgIds(svg, prefix){
 }
 
 // ✅ 충돌 없이, 박스 안에 맞춰 독립 <svg>로 삽입
+// ✅ 충돌 없이, 박스 안에 맞춰 독립 <svg>로 삽입
 function wrapSVG(svgString, maxW, maxH, prefix = ""){
   let raw = stripXmlDoctype(svgString);
-  raw = scopeSvgIds(raw, prefix);   // ← 핵심
+  raw = scopeSvgIds(raw, prefix);   // id 충돌 방지
 
   const vb = getViewBox(raw) || [0,0,512,512];
   const [, , vw, vh] = vb;
@@ -1211,16 +1212,15 @@ function wrapSVG(svgString, maxW, maxH, prefix = ""){
   const tx = (maxW - vw * scale) / 2;
   const ty = (maxH - vh * scale) / 2;
 
-  // 내부만 꺼내서 새 <svg viewBox="...">로 감싸면 스타일/ID가 해당 로고 내부로만 한정됨
   const inner = stripOuterSVG(raw);
   return `<g transform="translate(${tx},${ty}) scale(${scale})">
     <svg xmlns="http://www.w3.org/2000/svg"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
          viewBox="${vb.join(' ')}"
          width="${vw}" height="${vh}" preserveAspectRatio="xMidYMid meet">
       ${inner}
     </svg>
   </g>`;
-
 }
 
 
