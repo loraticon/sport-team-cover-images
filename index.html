@@ -193,7 +193,7 @@
 // sport 폴더명이 현재 'baseball', 'soccer' 등이라면 그대로 사용
 // 만약 '1-baseball'처럼 넘버링을 유지한다면 매핑을 사용하세요.
 
-const LOGO_BASE = "icons";  // 루트
+    const LOGO_BASE = "icons";  // 루트
 const LEAGUE_DIR = {
   domestic: "domestic-team",
   overseas: "overseas-team", // 추후 해외 추가 대비
@@ -1116,65 +1116,62 @@ function afterDomReadyAttachAutocomplete(){
    - 텍스트/스코어/색상 반영
    ========================= */
 // PNG만 저장, 로고 SVG는 ensureTeamSvg로 확보
-<script>
-async function downloadComposite(){
-  // B안: 1160 × 400 고정
+async function downloadComposite() {
+  // 아트보드
   const W = 1160, H = 400;
   const padding = 60;
   const logoBox = 280;
 
-  const VS_FONT    = 56;
-  const SCORE_FONT = 50;
-  const GAP_VS     = 56;
-  const GAP_SCORE  = 8;
-  const VS_HALF    = 34;
-
+  // 스타일
   const tColor = state.textColor;
-  const bg     = state.bgColor;
+  const bg = state.bgColor;
 
+  // 팀 데이터
   const home = state.homeTeamId ? getTeam(state.homeTeamId) : null;
   const away = state.awayTeamId ? getTeam(state.awayTeamId) : null;
 
-  // SVG 텍스트를 파일에서 읽어와 보장
-  const [homeSvg, awaySvg] = await Promise.all([
-    home ? ensureTeamSvg(home) : Promise.resolve(null),
-    away ? ensureTeamSvg(away) : Promise.resolve(null),
-  ]);
+  // 로고 SVG 문자열 확보 (없으면 fetch해서 team.svg 채움)
+  const homeSvg = await ensureTeamSvg(home);
+  const awaySvg = await ensureTeamSvg(away);
 
   const homeLogo = homeSvg ? wrapSVG(homeSvg, logoBox, logoBox)
                            : dashedRect(logoBox, logoBox, "#DDDDDD");
   const awayLogo = awaySvg ? wrapSVG(awaySvg, logoBox, logoBox)
                            : dashedRect(logoBox, logoBox, "#DDDDDD");
 
+  // 배치(B안)
+  const leftLogoX  = W/2 - 420;
+  const rightLogoX = W/2 + 140;
+  const logoY      = H/2 - logoBox/2 - 40;
+  const scoreY     = H/2 + logoBox/2 + 80;
+
   const svg = `
-  <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
-    <rect width="100%" height="100%" fill="${bg}"/>
-    <!-- 좌우 로고 -->
-    <g transform="translate(${padding}, ${(H - logoBox)/2})">${homeLogo}</g>
-    <g transform="translate(${W - padding - logoBox}, ${(H - logoBox)/2})">${awayLogo}</g>
+<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
+  <rect width="100%" height="100%" fill="${bg}"/>
+  <g transform="translate(${leftLogoX}, ${logoY})">${homeLogo}</g>
+  <g transform="translate(${rightLogoX}, ${logoY})">${awayLogo}</g>
 
-    <!-- VS -->
-    <text x="${W/2 - VS_HALF}" y="${H/2 + VS_FONT/3}"
-          font-family="Inter, Pretendard, Arial, sans-serif"
-          font-weight="800" font-size="${VS_FONT}" fill="${tColor}">VS</text>
+  <text x="${W/2}" y="${H/2 - 40}" fill="${tColor}" text-anchor="middle"
+        font-family="Inter, Pretendard, Arial, sans-serif" font-weight="700" font-size="80">vs</text>
 
-    <!-- 점수 -->
-    <text x="${padding + logoBox/2}" y="${H - GAP_SCORE}"
-          text-anchor="middle"
-          font-family="Inter, Pretendard, Arial, sans-serif"
-          font-weight="800" font-size="${SCORE_FONT}" fill="${tColor}">${state.homeScore}</text>
+  <text x="${W/2 - 280}" y="${scoreY}" fill="${tColor}" text-anchor="middle"
+        font-family="Inter, Pretendard, Arial, sans-serif" font-weight="800" font-size="96">${state.homeScore}</text>
+  <text x="${W/2 + 280}" y="${scoreY}" fill="${tColor}" text-anchor="middle"
+        font-family="Inter, Pretendard, Arial, sans-serif" font-weight="800" font-size="96">${state.awayScore}</text>
+</svg>
+  `.trim();
 
-    <text x="${W - padding - logoBox/2}" y="${H - GAP_SCORE}"
-          text-anchor="middle"
-          font-family="Inter, Pretendard, Arial, sans-serif"
-          font-weight="800" font-size="${SCORE_FONT}" fill="${tColor}">${state.awayScore}</text>
-  </svg>`;
-
-  // PNG만 저장
-  saveAsPng(svg, W, H, "cover.png");
+  // ✅ PNG만 저장
+  const pngBlob = await svgToPng(svg, W, H);
+  const url = URL.createObjectURL(pngBlob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "cover.png";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
 }
-</script>
-
 
 function wrapSVG(svgString, maxW, maxH) {
   // 주어진 SVG를 viewBox 기준으로 maxW/maxH 안에 들어가게 scale & center
