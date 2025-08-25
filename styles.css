@@ -465,4 +465,4 @@ a, a:visited {
 
 .preview-stage .team-label { display: none !important; }
 /* 팀명이 사라지면 간격이 줄어드니, 점수 위 여백을 넉넉히(다운로드의 scoreMargin과 맞춤) */
-.preview-stage .score { margin-top: 24px; } /* 필요에 따라 20~28px에서 조절 */
+.preview-stage .score { margin-top: 12px; } /* 필요에 따라 20~28px에서 조절 */
