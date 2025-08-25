@@ -451,7 +451,7 @@ a, a:visited {
 
 /* 기본값(데스크톱) */
 :root{
-  --sides-gap: 180px;   /* 좌/우 로고와 VS 사이 간격(아이템 사이) */
+  --sides-gap: 56px;   /* 좌/우 로고와 VS 사이 간격(아이템 사이) */
   --vs-size:   56px;    /* VS 글자 크기 */
   --score-size:72px;    /* 점수 크기 */
 }
@@ -466,9 +466,9 @@ a, a:visited {
 /* 모바일: 간격/글자 크기 축소(가로 유지) */
 @media (max-width: 640px){
   :root{
-    --sides-gap: 36px;   /* 데스크톱 180 → 모바일 36 */
-    --vs-size:   48px;   /* VS 조금 작게 */
-    --score-size:56px;   /* 점수 조금 작게 */
+    --sides-gap: 32px;   /* 데스크톱 180 → 모바일 36 */
+    --vs-size:   32px;   /* VS 조금 작게 */
+    --score-size:40px;   /* 점수 조금 작게 */
   }
   /* 넘침 방지용(선택) */
   .preview-stage{ overflow: hidden; padding: 24px 12px 84px; }
