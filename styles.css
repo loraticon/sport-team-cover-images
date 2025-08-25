@@ -448,3 +448,37 @@ a, a:visited {
 .preview-stage .team-label { display: none !important; }
 /* 팀명이 사라지면 간격이 줄어드니, 점수 위 여백을 넉넉히(다운로드의 scoreMargin과 맞춤) */
 .preview-stage .score { margin-top: 12px; } /* 필요에 따라 20~28px에서 조절 */
+
+/* 기본값(데스크톱) */
+:root{
+  --sides-gap: 180px;   /* 좌/우 로고와 VS 사이 간격(아이템 사이) */
+  --vs-size:   56px;    /* VS 글자 크기 */
+  --score-size:72px;    /* 점수 크기 */
+}
+
+/* gap/글자 크기 실제 적용 */
+.preview-stage{
+  gap: var(--sides-gap);
+}
+.preview-stage .vs{ font-size: var(--vs-size); }
+.preview-stage .score{ font-size: var(--score-size); }
+
+/* 모바일: 간격/글자 크기 축소(가로 유지) */
+@media (max-width: 640px){
+  :root{
+    --sides-gap: 36px;   /* 데스크톱 180 → 모바일 36 */
+    --vs-size:   48px;   /* VS 조금 작게 */
+    --score-size:56px;   /* 점수 조금 작게 */
+  }
+  /* 넘침 방지용(선택) */
+  .preview-stage{ overflow: hidden; padding: 24px 12px 84px; }
+}
+
+/* 더 좁은 기기(선택): 한 단계 더 줄이기 */
+@media (max-width: 480px){
+  :root{
+    --sides-gap: 24px;   /* 아주 좁을 때는 더 촘촘하게 */
+    --vs-size:   44px;
+    --score-size:52px;
+  }
+}
