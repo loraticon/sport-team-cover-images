@@ -1108,9 +1108,41 @@ function afterDomReadyAttachAutocomplete(){
    ========================= */
 function downloadComposite() {
   // 크기(노션 커버 비율 느낌)
-  const W = 1600, H = 640;
+  const W = 1160, H = 400;
   const padding = 60;
   const logoBox = 280; // 로고 최대 한 변
+
+  const VS_FONT = 56;
+  const SCORE_FONT = 50;  // 줄임
+  const GAP_VS = 56;
+  const GAP_SCORE = 8;
+  const VS_HALF = 34;     // VS 폭의 절반(대략)
+
+  // 좌표
+  const vsX = W/2;
+  const vsY = padding + logoBox/2;
+
+  const logoTop    = padding;                             // 60
+  const leftLogoX  = vsX - VS_HALF - GAP_VS - logoBox;    // 210
+  const rightLogoX = vsX + VS_HALF + GAP_VS;              // 670
+
+  const scoreY     = logoTop + logoBox + GAP_SCORE;       // 348
+  const leftScoreX = leftLogoX  + logoBox/2;              // 350
+  const rightScoreX= rightLogoX + logoBox/2;              // 810
+
+  // 로고
+  `<g transform="translate(${leftLogoX}, ${logoTop})">${homeLogo}</g>`
+  `<g transform="translate(${rightLogoX}, ${logoTop})">${awayLogo}</g>`
+
+  // VS
+  `<text x="${vsX}" y="${vsY}" text-anchor="middle" dominant-baseline="middle"
+       font-size="${VS_FONT}" font-weight="800">VS</text>`
+
+  // 점수
+  `<text x="${leftScoreX}"  y="${scoreY}"  text-anchor="middle" dominant-baseline="hanging"
+       font-size="${SCORE_FONT}" font-weight="800">${state.homeScore}</text>`
+  `<text x="${rightScoreX}" y="${scoreY}" text-anchor="middle" dominant-baseline="hanging"
+       font-size="${SCORE_FONT}" font-weight="800">${state.awayScore}</text>`
 
   // 텍스트/색상
   const tColor = state.textColor;
