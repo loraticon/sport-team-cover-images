@@ -482,3 +482,55 @@ a, a:visited {
     --score-size:52px;
   }
 }
+
+/* 공통: 점수 패딩 기준 변수(있으면 생략 가능) */
+:root{
+  --stage-pad-x: 48px;   /* 프리뷰 좌/우 안쪽 여백 */
+}
+
+/* 태블릿 가로(아이패드 9세대 포함) 전용 조정 */
+@media (orientation: landscape) and (min-width: 900px) and (max-width: 1180px){
+
+  /* 1) 크기/간격 변수 덮어쓰기 */
+  :root{
+    /* 로고 박스 한 변 길이: 화면 폭에 따라 자동 축소 */
+    --logo-box: clamp(150px, 22vw, 190px);
+
+    /* VS / 점수 글자 크기 축소 */
+    --vs-size:    clamp(40px, 5vw, 52px);
+    --score-size: clamp(48px, 6.5vw, 64px);
+
+    /* 프리뷰 좌우 여백(점수 위치 기준) */
+    --stage-pad-x: clamp(12px, 3vw, 24px);
+  }
+
+  /* 2) 프리뷰 스테이지: 패딩/넘침/간격 */
+  .preview-stage{
+    position: relative;
+    overflow: hidden;                     /* 넘침 방지 */
+    padding: 32px var(--stage-pad-x) 90px;/* 하단은 점수 자리 */
+    /* 남은 가로폭을 보고 gap을 자동 계산(최소~최대 가드) */
+    gap: clamp(
+      24px,
+      calc((100% - (2 * var(--logo-box)) - var(--vs-size)) / 2),
+      72px
+    );
+  }
+
+  /* 3) 로고 슬롯(점선 박스)도 변수 기준으로 */
+  .logo-slot,
+  .stage-home .logo-slot,
+  .stage-away .logo-slot{
+    width: var(--logo-box);
+    height: var(--logo-box);
+  }
+
+  /* 4) VS/점수 글자 크기 적용(이미 있다면 뒤에서 덮어씀) */
+  .preview-stage .vs{ font-size: var(--vs-size); }
+  .preview-stage .score{ font-size: var(--score-size); }
+
+  /* 5) 점수의 좌우 위치를 패딩 기준으로 고정 */
+  .preview-stage .score.left  { left:  var(--stage-pad-x); }
+  .preview-stage .score.right { right: var(--stage-pad-x); }
+}
+
