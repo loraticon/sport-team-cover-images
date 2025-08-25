@@ -1120,7 +1120,12 @@ async function downloadComposite() {
   // 아트보드
   const W = 1160, H = 400;
   const padding = 60;
-  const logoBox = 280;
+  const logoBox = 240;
+  const gap = 200;   // 중앙 기준 로고와의 간격
+  const vsSize    = 88;    // "VS" 글자 크기 80 → 88
+  const scoreSize = 128;   // 점수 크기 96 → 128
+  const logoDy    = -10;   // 로고 상하 미세조정(-는 위로)
+  const scoreDy   = 100;   // 점수 상하 미세조정(+는 아래로)
 
   // 스타일
   const tColor = state.textColor;
@@ -1138,10 +1143,13 @@ async function downloadComposite() {
   const awayLogo = awaySvg ? wrapSVG(awaySvg, logoBox, logoBox, `away-${away?.id}-`) : dashedRect(logoBox, logoBox, "#DDDDDD");
 
   // 배치(B안)
-  const leftLogoX  = W/2 - 420;
-  const rightLogoX = W/2 + 140;
-  const logoY      = H/2 - logoBox/2 - 40;
-  const scoreY     = H/2 + logoBox/2 + 80;
+  const leftLogoX  = W/2 - logoBox - gap;
+  const rightLogoX = W/2 + gap;
+  const logoY      = (H - logoBox)/2 + logoDy;
+  const scoreY     = (H + logoBox)/2 + scoreDy;
+  const rightScoreX = W/2 + (gap + logoBox/2);
+  const leftScoreX  = W/2 - (gap + logoBox/2);
+  const scoreY      = (H + logoBox)/2 + scoreDy;
 
   const svg = `
 <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
