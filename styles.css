@@ -491,16 +491,6 @@ a, a:visited {
 /* 태블릿 가로(아이패드 9세대 포함) 전용 조정 */
 @media (orientation: landscape) and (min-width: 900px) and (max-width: 1180px){
 
-   .controls-grid{
-    grid-template-columns: 1fr;   /* 2열 → 1열 */
-    row-gap: 14px;
-
-    .controls-grid .field{
-    display: grid;
-    grid-template-columns: 1fr;   /* 라벨/입력/보조 버튼을 위→아래로 */
-    row-gap: 8px;
-  }
-
   /* 1) 크기/간격 변수 덮어쓰기 */
   :root{
     /* 로고 박스 한 변 길이: 화면 폭에 따라 자동 축소 */
@@ -543,5 +533,3 @@ a, a:visited {
   .preview-stage .score.left  { left:  var(--stage-pad-x); }
   .preview-stage .score.right { right: var(--stage-pad-x); }
 }
-
-
