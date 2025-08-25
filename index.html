@@ -1168,8 +1168,7 @@ async function downloadComposite() {
         font-family="Inter, Pretendard, Arial, sans-serif" font-weight="800" font-size="${SCORE_FONT}">${state.awayScore}</text>
 </svg>`.trim();
 
-  // 저장(SVG+PNG)
-  downloadAs("cover.svg", "image/svg+xml;charset=utf-8", svg);
+  // 저장(PNG)
   const pngBlob = await svgToPng(svg, W, H);
   const url = URL.createObjectURL(pngBlob);
   const a = document.createElement("a");
