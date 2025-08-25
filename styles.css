@@ -88,7 +88,7 @@ img{max-width:100%;height:auto;display:block}
 
   /* 모바일에서 로고/간격 살짝 축소 */
   :root{
-    --logo-box: 180px;   /* 250 → 180 */
+    --logo-box: 160px;   /* 250 → 180 */
     --sides-gap: 104px;  /* 좌/우 로고 간격 축소 */
   }
 
@@ -98,11 +98,15 @@ img{max-width:100%;height:auto;display:block}
   }
 
   .preview-stage{
-    min-height: 540px;    /* 모바일 스테이지 높이 */
-    padding: 32px 16px 96px; /* 상/좌우/하 패딩 */
+    min-height: 520px;    /* 모바일 스테이지 높이 */
+    padding: 28px 16px 88px; /* 상/좌우/하 패딩 */
     gap: var(--sides-gap);
-    gap: clamp(80px, calc((100% - (2 * var(--logo-box)) - 56px)/2), 150px);
+    gap: clamp(32px, calc((100% - (2 * var(--logo-box)) - 56px) / 2), 72px);
+     overflow: hidden;
   }
+
+  .score { font-size: 56px; }   /* 64 → 56 */
+   
 
   .controls{ grid-template-columns: 1fr; } /* 입력 폼도 한 줄 */
 }
