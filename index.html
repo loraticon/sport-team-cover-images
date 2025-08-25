@@ -1173,14 +1173,40 @@ async function downloadComposite() {
   `.trim();
 
   const pngBlob = await svgToPng(svg, W, H);
-  const url = URL.createObjectURL(pngBlob);
-  const a = document.createElement("a");
+  const isIOS =
+  /iP(hone|ad|od)/.test(navigator.userAgent) ||
+  (/Mac/.test(navigator.platform) && 'ontouchend' in document);
+
+// 2) Blob URL 생성
+const url = URL.createObjectURL(pngBlob);
+
+if (isIOS) {
+  // iOS/Safari: 새 탭에 이미지를 띄워 사용자가 길게 눌러 저장/공유할 수 있게 함
+  const win = window.open('', '_blank');   // 사용자 클릭 이벤트 안에서 실행되므로 팝업 차단에 안 걸림
+  if (win) {
+    win.document.title = 'cover.png';
+    win.document.body.style.margin = '0';
+    win.document.body.style.background = '#fff';
+    const img = new Image();
+    img.onload = () => URL.revokeObjectURL(url); // 메모리 정리
+    img.src = url;
+    img.style.width = '100%';
+    img.style.height = 'auto';
+    win.document.body.appendChild(img);
+  } else {
+    // 드물게 새 탭이 막힌 경우, 마지막 보루로 현재 탭에서 열기
+    location.href = url;
+  }
+} else {
+  // 데스크톱/안드로이드 등: 기존처럼 바로 다운로드
+  const a = document.createElement('a');
   a.href = url;
-  a.download = "cover.png";
+  a.download = 'cover.png';
   document.body.appendChild(a);
   a.click();
   a.remove();
   URL.revokeObjectURL(url);
+}
 }
 // XML/Doctype 제거
 function stripXmlDoctype(svg){
