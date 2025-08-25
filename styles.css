@@ -290,6 +290,9 @@ img{max-width:100%;height:auto;display:block}
 .preview-toolbar{
   display: flex;
   justify-content: flex-end;
+  position:absolute; top:16px; right:16px;
+  z-index:30;             /* 스테이지보다 위 */
+  pointer-events:auto;
   margin-bottom: 12px;   /* 아래 스테이지와 간격 */
 }
 
@@ -349,6 +352,8 @@ img{max-width:100%;height:auto;display:block}
 
   /* 미리보기(스테이지): 모바일에서 조금 더 낮추기 */
   .preview-stage{
+    position:relative;
+    z-index:1;
     min-height: 520px;         /* 540 → 520 (필요시 500~560에서 조정) */
     padding: 28px 16px 88px;   /* 상/좌우/하 여백 */
   }
@@ -409,7 +414,7 @@ a, a:visited {
 .panel-left{ position: relative; z-index: 10; }   /* ← 좌측을 항상 위로 */
 .panel-right{ position: relative; z-index: 1; }
 
-.preview-card{ position: relative; overflow: hidden; } /* 내부가 왼쪽 영역으로 넘치지 않게 */
+.preview-card{ position: relative;} /* 내부가 왼쪽 영역으로 넘치지 않게 */
 .preview-stage{ position: relative; max-width: 100%; }  /* 우측 스테이지가 그리드 밖으로 커지지 않게 */
 
 /* (선택) 넓은 미디어에서만 좌우 2칼럼, 좁을 때 1칼럼 */
