@@ -145,7 +145,7 @@
         <!-- 우리 팀 -->
         <div class="control-row">
           <label for="home-team" class="control-label">우리 팀</label>
-          <input id="home-team" type="text" readonly placeholder="우리 팀을 선택하세요" data-role="home-team-input" />
+          <input id="home-team" type="text" placeholder="우리 팀을 선택하세요" data-role="home-team-input" />
         </div>
 
         <div class="control-row">
@@ -156,7 +156,7 @@
         <!-- 상대 팀 -->
         <div class="control-row">
           <label for="away-team" class="control-label">상대 팀</label>
-          <input id="away-team" type="text" readonly placeholder="상대 팀을 선택하세요" data-role="away-team-input" />
+          <input id="away-team" type="text" placeholder="상대 팀을 선택하세요" data-role="away-team-input" />
         </div>
 
         <div class="control-row">
@@ -1096,10 +1096,8 @@ function attachAutocomplete(inputEl, side){ // side: 'home' | 'away'
 
 // 초기화 시 한 번만 장착
 function afterDomReadyAttachAutocomplete(){
-  const homeInput = document.getElementById("home-team-input");
-  const awayInput = document.getElementById("away-team-input");
-  attachAutocomplete(homeInput, "home");
-  attachAutocomplete(awayInput, "away");
+  attachAutocomplete(el.homeTeamInput, "home");
+  attachAutocomplete(el.awayTeamInput, "away");
 }
 
 
