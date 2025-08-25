@@ -534,19 +534,4 @@ a, a:visited {
   .preview-stage .score.right { right: var(--stage-pad-x); }
 }
 
-/* 컨트롤 폼 그리드(예: .controls-grid, .right-controls 등) 안에
-   '입력칸'을 담는 요소 클래스에 적용하세요. 
-   클래스명이 다르면 아래 셀렉터를 실제 프로젝트 클래스명에 맞게 바꿔 주세요. */
-.controls-grid .input-wrap,
-.controls-grid .field-input,
-.controls-grid .col-input {
-  min-width: 0;               /* << 이것이 핵심! */
-}
 
-/* 혹시 input 자체가 flex/grid 아이템이면 여기도 안전빵 */
-.controls-grid input[type="text"],
-.controls-grid input[type="number"],
-.controls-grid input[type="search"]{
-  width: 100%;
-  min-width: 0;
-}
