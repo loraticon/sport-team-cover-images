@@ -1185,9 +1185,10 @@ function scopeSvgIds(svg, prefix){
     return `id="${prefix}${id}"`;
   });
   ids.forEach((id) => {
-    const r1 = new RegExp(`url\\(#${id}\\)`, "g");
-    const r2 = new RegExp(`(["'])#${id}\\1`, "g"); // href="#id" / xlink:href="#id"
-    svg = svg.replace(r1, `url(#${prefix}${id})`).replace(r2, `"$#${prefix}${id}"`.replace("$",""));
+    svg = svg
+      .replace(new RegExp(`url\\(#${id}\\)`, "g"), `url(#${prefix}${id})`)
+      .replace(new RegExp(`(href=['"])#${id}(['"])`, "g"), `$1#${prefix}${id}$2`)
+      .replace(new RegExp(`(xlink:href=['"])#${id}(['"])`, "g"), `$1#${prefix}${id}$2`);
   });
   return svg;
 }
