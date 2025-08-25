@@ -290,9 +290,8 @@ img{max-width:100%;height:auto;display:block}
 .preview-toolbar{
   display: flex;
   justify-content: flex-end;
-  position:absolute; top:16px; right:16px;
+  position:static; top:16px; right:16px;
   z-index:30;             /* 스테이지보다 위 */
-  pointer-events:auto;
   margin-bottom: 12px;   /* 아래 스테이지와 간격 */
 }
 
