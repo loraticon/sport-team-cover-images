@@ -244,10 +244,13 @@ img{max-width:100%;height:auto;display:block}
 .logo-box{
   width:var(--logo-box);height:var(--logo-box);
   border:2px dashed var(--gray-400);border-radius:16px;
-  display:flex;align-items:center;justify-content:center;overflow:hidden;background:#fff;
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+  background: transparent;                     /* ← 흰 배경 제거 */
 }
-/* 로고가 들어오면 바깥 점선 숨기기(레이아웃 변화 없음) */
-.logo-box:has(img){ border-color: transparent; }
+.logo-box:has(img){
+  border-color: transparent;                   /* 로고 있으면 점선 숨김 */
+  background: transparent;                     /* 안전하게 배경도 투명 유지 */
+}
 
 .logo-box svg,.logo-box img{width:100%;height:100%;object-fit:contain;display:block}
 .team-label{font-size:24px;color:var(--gray-500);font-weight:700;line-height:1.2}
