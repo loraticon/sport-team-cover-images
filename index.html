@@ -1181,8 +1181,6 @@ async function downloadComposite() {
   URL.revokeObjectURL(url);
 }
 
-}
-
 function wrapSVG(svgString, maxW, maxH) {
   // 주어진 SVG를 viewBox 기준으로 maxW/maxH 안에 들어가게 scale & center
   const vb = getViewBox(svgString) || [0,0,512,512];
