@@ -230,6 +230,10 @@ img{max-width:100%;height:auto;display:block}
   justify-content:center;
   gap:var(--sides-gap);
 
+.preview-stage .team-label { display: none !important; }
+/* 팀명이 사라지면 간격이 줄어드니, 점수 위 여백을 넉넉히(다운로드의 scoreMargin과 맞춤) */
+.preview-stage .score { margin-top: 24px; } /* 필요에 따라 20~28px에서 조절 */
+
   /* 고정 height 제거 + 여유 확보 */
   height:auto;
   min-height:640px;              /* 필요 시 560~640px 사이로 */
