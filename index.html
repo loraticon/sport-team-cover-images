@@ -1200,11 +1200,37 @@ function scopeSvgIds(svg, prefix){
   return svg;
 }
 
+// class 충돌 예방: class="st0 st1" → class="home-...-st0 home-...-st1"
+// 그리고 <style> 안의 ".st0", ".cls-1" 같은 선택자도 동일하게 치환
+function scopeSvgClasses(svg, prefix){
+  const classes = new Set();
+
+  // ① 요소의 class 속성 치환 및 수집
+  svg = svg.replace(/\bclass="([^"]+)"/g, (m, value) => {
+    const mapped = value.split(/\s+/).filter(Boolean).map(c => {
+      classes.add(c);
+      return prefix + c;
+    }).join(" ");
+    return `class="${mapped}"`;
+  });
+
+  // ② <style> 내부의 .클래스 선택자 치환
+  //   (.st0, .cls-1, .fill_black 등 대부분 커버)
+  classes.forEach((cls) => {
+    const re = new RegExp(`\\.${cls}(?=[^a-zA-Z0-9_-])`, "g");
+    svg = svg.replace(re, `.${prefix}${cls}`);
+  });
+
+  return svg;
+}
+    
+
 // ✅ 충돌 없이, 박스 안에 맞춰 독립 <svg>로 삽입
 // ✅ 충돌 없이, 박스 안에 맞춰 독립 <svg>로 삽입
 function wrapSVG(svgString, maxW, maxH, prefix = ""){
   let raw = stripXmlDoctype(svgString);
   raw = scopeSvgIds(raw, prefix);   // id 충돌 방지
+  raw = scopeSvgClasses(raw, prefix); // ✅ 클래스(.st0 등) 충돌 방지  ← 추가
 
   const vb = getViewBox(raw) || [0,0,512,512];
   const [, , vw, vh] = vb;
