@@ -1157,12 +1157,12 @@ async function downloadComposite() {
   <g transform="translate(${leftLogoX}, ${logoY})">${homeLogo}</g>
   <g transform="translate(${rightLogoX}, ${logoY})">${awayLogo}</g>
 
-  <text x="${W/2}" y="${H/2 - 40}" fill="${tColor}" text-anchor="middle"
+  <text x="${W/2}" y="${H/2 - 40}" fill="${tColor}" text-anchor="middle" dominant-baseline="middle"
         font-family="Inter, Pretendard, Arial, sans-serif" font-weight="800" font-size="${vsSize}">VS</text>
 
-  <text x="${leftScoreX}"  y="${scoreY}" fill="${tColor}" text-anchor="middle"
+  <text x="${leftScoreX}"  y="${scoreY}" fill="${tColor}" text-anchor="middle" dominant-baseline="hanging"
         font-family="Inter, Pretendard, Arial, sans-serif" font-weight="800" font-size="${scoreSize}">${state.homeScore}</text>
-  <text x="${rightScoreX}" y="${scoreY}" fill="${tColor}" text-anchor="middle"
+  <text x="${rightScoreX}" y="${scoreY}" fill="${tColor}" text-anchor="middle" dominant-baseline="hanging"
         font-family="Inter, Pretendard, Arial, sans-serif" font-weight="800" font-size="${scoreSize}">${state.awayScore}</text>
 </svg>
   `.trim();
