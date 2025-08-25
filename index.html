@@ -722,6 +722,7 @@ async function init() {
   buildLeftLists();
   bindEvents();
   renderRightPanel();
+  afterDomReadyAttachAutocomplete();
 }
 
 /* =========================
@@ -1019,6 +1020,88 @@ function normalizeHex(v) {
   if (/^#([0-9A-F]{6})$/.test(x)) return x;
   return null;
 }
+
+  // 공백 무시 비교용 (이미 있으면 사용)
+function norm(str){ return String(str).toLowerCase().replace(/[\s\-._/·・]/g, ""); }
+
+// 입력칸에 자동완성 붙이기
+function attachAutocomplete(inputEl, side){ // side: 'home' | 'away'
+  if(!inputEl) return;
+
+  // 부모를 기준 위치로
+  const parent = inputEl.parentElement;
+  if (getComputedStyle(parent).position === "static") parent.style.position = "relative";
+
+  // 메뉴 생성
+  const menu = document.createElement("div");
+  menu.className = "autocomplete-menu";
+  menu.hidden = true;
+  parent.appendChild(menu);
+
+  // 메뉴 렌더
+  function renderMenu(items){
+    menu.innerHTML = "";
+    if(!items.length){ menu.hidden = true; return; }
+    items.slice(0, 10).forEach(team => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "autocomplete-item";
+      btn.innerHTML = `
+        <span class="team-logo"><img src="${logoPath(team)}" alt=""></span>
+        <span class="team-name">${team.name}</span>
+      `;
+      btn.addEventListener("click", () => {
+        // 상태 업데이트 (좌/우 패널 동기화)
+        if(side === "home"){
+          state.homeTeamId = team.id;
+          state.leftPanelSelected.home = team.id;
+          // 입력칸 값 고정
+          inputEl.value = team.name;
+        }else{
+          state.awayTeamId = team.id;
+          state.leftPanelSelected.away = team.id;
+          inputEl.value = team.name;
+        }
+        // UI 갱신
+        renderRightPanel();
+        buildLeftLists();
+        closeMenu();
+      });
+      menu.appendChild(btn);
+    });
+    menu.hidden = false;
+  }
+
+  function closeMenu(){ menu.hidden = true; }
+
+  function update(){
+    const q = norm(inputEl.value);
+    if(q === ""){ closeMenu(); return; }
+    // 탭(국내/해외)와 검색어 기준으로 후보 만들기
+    const items = TEAM_DB.filter(t =>
+      t.league === state.tab && norm(t.name).includes(q)
+    );
+    renderMenu(items);
+  }
+
+  // 이벤트
+  inputEl.addEventListener("input", update);
+  inputEl.addEventListener("focus", update);
+  inputEl.addEventListener("keydown", (e) => {
+    if(e.key === "Escape"){ closeMenu(); inputEl.blur(); }
+  });
+  // blur 시 바로 닫으면 클릭 못하니 살짝 지연
+  inputEl.addEventListener("blur", () => setTimeout(closeMenu, 120));
+}
+
+// 초기화 시 한 번만 장착
+function afterDomReadyAttachAutocomplete(){
+  const homeInput = document.getElementById("home-team-input");
+  const awayInput = document.getElementById("away-team-input");
+  attachAutocomplete(homeInput, "home");
+  attachAutocomplete(awayInput, "away");
+}
+
 
 /* =========================
    다운로드 (SVG 합성 → PNG/SVG)
