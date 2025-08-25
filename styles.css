@@ -93,7 +93,7 @@ img{max-width:100%;height:auto;display:block}
   /* 2) 로고 크기를 화면폭에 맞춰 자동 축소 (최소~최대 가드) */
   :root{
     /* 120px ~ 150px 범위에서 화면폭에 비례해 변하도록 */
-    --logo-box: clamp(120px, 36vw, 150px);
+    --logo-box: clamp(112px, 34vw, 150px);
   }
 
   /* 3) 카드/스테이지 패딩을 살짝 절약 */
