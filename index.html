@@ -1152,11 +1152,12 @@ async function downloadComposite() {
   const rightScoreX = W/2 + (gap + logoBox/2);
   const scoreY      = (H + logoBox)/2 + scoreMargin;
 
-  const shiftY = 24; // 음수면 위로, 양수면 아래로 (예: -12 ~ -24 사이에서 조절)
+  const shiftY = -18; // 음수면 위로, 양수면 아래로 (예: -12 ~ -24 사이에서 조절)
 
   const svg = `
 <svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">
   <rect width="100%" height="100%" fill="${bg}"/>
+  <g transform="translate(0, ${shiftY})"> 
   <g transform="translate(${leftLogoX}, ${logoY})">${homeLogo}</g>
   <g transform="translate(${rightLogoX}, ${logoY})">${awayLogo}</g>
 
@@ -1167,6 +1168,7 @@ async function downloadComposite() {
         font-family="Inter, Pretendard, Arial, sans-serif" font-weight="800" font-size="${scoreSize}">${state.homeScore}</text>
   <text x="${rightScoreX}" y="${scoreY}" fill="${tColor}" text-anchor="middle" dominant-baseline="hanging"
         font-family="Inter, Pretendard, Arial, sans-serif" font-weight="800" font-size="${scoreSize}">${state.awayScore}</text>
+</g>        
 </svg>
   `.trim();
 
