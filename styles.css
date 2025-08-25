@@ -337,39 +337,6 @@ img{max-width:100%;height:auto;display:block}
 .btn{height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--gray-300);background:#fff}
 .btn-ghost{border:none;background:transparent;color:#666}
 
-/* ===== 모바일(≤640px) 다듬기 ===== */
-@media (max-width: 640px){
-
-  /* 레이아웃 1열은 이미 적용되어 있으므로, 컴포넌트 크기만 모바일에 맞게 줄임 */
-  .tabs [role="tab"]{
-    height: 64px;              /* 80 → 64 */
-    font-size: 18px;
-  }
-
-  .sport-toggle{
-    padding: 14px 12px;        /* 18px → 14px */
-    font-size: 18px;
-  }
-
-  .team-logo{                  /* 썸네일 살짝 축소(선택) */
-    width: 48px;
-    height: 48px;
-    flex: 0 0 48px;
-  }
-
-  /* 미리보기(스테이지): 모바일에서 조금 더 낮추기 */
-  .preview-stage{
-    position:relative;
-    z-index:1;
-    min-height: 520px;         /* 540 → 520 (필요시 500~560에서 조정) */
-    padding: 28px 16px 88px;   /* 상/좌우/하 여백 */
-  }
-
-  /* 카드 패딩도 모바일에 맞춰 살짝 축소(이미 일부 적용돼 있지만 보강) */
-  .preview-card,
-  .controls{ padding: 16px; }
-}
-
 /* ===== iOS Safari에서 파란 링크색 방지 ===== */
 a, a:visited { 
   color: inherit;              /* 부모 색(=검정) 상속 */
