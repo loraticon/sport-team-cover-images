@@ -1134,10 +1134,8 @@ async function downloadComposite() {
   const homeSvg = await ensureTeamSvg(home);
   const awaySvg = await ensureTeamSvg(away);
 
-  const homeLogo = homeSvg ? wrapSVG(homeSvg, logoBox, logoBox)
-                           : dashedRect(logoBox, logoBox, "#DDDDDD");
-  const awayLogo = awaySvg ? wrapSVG(awaySvg, logoBox, logoBox)
-                           : dashedRect(logoBox, logoBox, "#DDDDDD");
+  const homeLogo = homeSvg ? wrapSVG(homeSvg, logoBox, logoBox, `home-${home?.id}-`) : dashedRect(logoBox, logoBox, "#DDDDDD");
+  const awayLogo = awaySvg ? wrapSVG(awaySvg, logoBox, logoBox, `away-${away?.id}-`) : dashedRect(logoBox, logoBox, "#DDDDDD");
 
   // 배치(B안)
   const leftLogoX  = W/2 - 420;
@@ -1173,17 +1171,45 @@ async function downloadComposite() {
   URL.revokeObjectURL(url);
 }
 
-function wrapSVG(svgString, maxW, maxH) {
-  // 주어진 SVG를 viewBox 기준으로 maxW/maxH 안에 들어가게 scale & center
-  const vb = getViewBox(svgString) || [0,0,512,512];
-  const vbW = vb[2], vbH = vb[3];
-  const scale = Math.min(maxW / vbW, maxH / vbH);
-  const tx = (maxW - vbW * scale) / 2;
-  const ty = (maxH - vbH * scale) / 2;
-
-  // 외부 fill/clipPath 영향 없도록 <g>로 감싸고 transform 적용
-  return `<g transform="translate(${tx},${ty}) scale(${scale})">${stripOuterSVG(svgString)}</g>`;
+// XML/Doctype 제거
+function stripXmlDoctype(svg){
+  return svg.replace(/<\?xml[\s\S]*?\?>/ig, "").replace(/<!DOCTYPE[\s\S]*?>/ig, "");
 }
+
+// id 충돌 예방: id="xxx" → id="${prefix}xxx"
+// url(#xxx), href="#xxx", xlink:href="#xxx" 도 함께 치환
+function scopeSvgIds(svg, prefix){
+  const ids = new Set();
+  svg = svg.replace(/\bid="([^"]+)"/g, (_, id) => {
+    ids.add(id);
+    return `id="${prefix}${id}"`;
+  });
+  ids.forEach((id) => {
+    const r1 = new RegExp(`url\\(#${id}\\)`, "g");
+    const r2 = new RegExp(`(["'])#${id}\\1`, "g"); // href="#id" / xlink:href="#id"
+    svg = svg.replace(r1, `url(#${prefix}${id})`).replace(r2, `"$#${prefix}${id}"`.replace("$",""));
+  });
+  return svg;
+}
+
+// ✅ 충돌 없이, 박스 안에 맞춰 독립 <svg>로 삽입
+function wrapSVG(svgString, maxW, maxH, prefix = ""){
+  let raw = stripXmlDoctype(svgString);
+  raw = scopeSvgIds(raw, prefix);   // ← 핵심
+
+  const vb = getViewBox(raw) || [0,0,512,512];
+  const [, , vw, vh] = vb;
+  const scale = Math.min(maxW / vw, maxH / vh);
+  const tx = (maxW - vw * scale) / 2;
+  const ty = (maxH - vh * scale) / 2;
+
+  // 내부만 꺼내서 새 <svg viewBox="...">로 감싸면 스타일/ID가 해당 로고 내부로만 한정됨
+  const inner = stripOuterSVG(raw);
+  return `<g transform="translate(${tx},${ty}) scale(${scale})">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb.join(' ')}">${inner}</svg>
+  </g>`;
+}
+
 
 function dashedRect(w, h, color) {
   return `<rect width="${w}" height="${h}" rx="16" ry="16" fill="none" stroke="${color}" stroke-width="4" stroke-dasharray="8 8"/>`;
