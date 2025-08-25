@@ -100,7 +100,6 @@ img{max-width:100%;height:auto;display:block}
   .preview-stage{
     min-height: 520px;    /* 모바일 스테이지 높이 */
     padding: 28px 16px 88px; /* 상/좌우/하 패딩 */
-    gap: var(--sides-gap);
     gap: clamp(32px, calc((100% - (2 * var(--logo-box)) - 56px) / 2), 72px);
      overflow: hidden;
   }
