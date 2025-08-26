@@ -174,7 +174,7 @@ img{max-width:100%;height:auto;display:block}
 .sport-toggle .count{margin-left:auto;color:#777}
 
 /* 카테고리 아이콘 PNG 크기 고정 */
-.sport-toggle .icon{width:20px;height:20px;display:inline-flex;align-items:center;justify-content:center}
+.sport-toggle .icon{width:32px;height:32px;display:inline-flex;align-items:center;justify-content:center}
 .sport-toggle .icon img{width:100%;height:100%;object-fit:contain;display:block}
 
 /* 팀 리스트 */
